@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS盒子模型</title>
+
+  <style>
+    .demo  {
+      display: block;
+      margin: 20px;          /* 外边距 */
+      padding: 10px;         /* 内边距 */
+      border: 5px solid black; /* 边框 */
+      width: 200px;          /* 宽度 */
+      height: 100px;         /* 高度 */
+      box-sizing: border-box; /* 包括边框和内边距在内的宽高计算 */
+      background-color: lightgray; /* 背景颜色 */
+    }
+    .border-demo {
+      width: 150px;
+      height: 80px;
+      border: 3px dashed blue; /* 虚线边框 复合元素 */
+      margin: 15px;/* 外边距 */
+      padding: 8px;/* 内边距 */
+      box-sizing: content-box; /* 仅内容宽高计算 */
+      border-width: 10px; /* 边框宽度 */
+      border-style:solid dashed dotted double; /* 边框样式 */
+      background-color: lightyellow;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo">前端开发页面</div>
+  <div class="border-demo">这是一个边框示例</div>
+</body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SciCapenter Mock Interface</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel-bg: #ffffff;
+      --border: #d8deeb;
+      --text: #2c3a4b;
+      --accent: #4b7bec;
+      --accent-light: rgba(75, 123, 236, 0.1);
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4 {
+      margin: 0;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 24px;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      box-shadow: 0 6px 18px rgba(44, 58, 75, 0.05);
+    }
+
+    /* PDF Upload Panel */
+    .upload-panel {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .upload-drop {
+      flex: 1;
+      min-width: 240px;
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      background: var(--accent-light);
+      color: var(--accent);
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .upload-drop:hover {
+      background: rgba(75, 123, 236, 0.16);
+      border-color: var(--accent);
+    }
+
+    /* Navigation Bar */
+    .figure-nav {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .figure-nav button {
+      min-width: 110px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel-bg);
+      color: var(--text);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .figure-nav button.active {
+      border-color: var(--accent);
+      box-shadow: 0 6px 16px rgba(75, 123, 236, 0.2);
+      transform: translateY(-2px);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .main-area {
+      display: flex;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .figure-preview {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .figure-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      background: #fdfefe;
+      font-size: 1.4rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .figure-info {
+      flex: 1.8;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 280px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #5f6f82;
+    }
+
+    .caption-editor textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      resize: vertical;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .rating-stars {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.3rem;
+    }
+
+    .stars {
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fafbff;
+      font-size: 0.9rem;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .status-true {
+      background: var(--success);
+    }
+
+    .status-false {
+      background: var(--danger);
+    }
+
+    .ai-caption {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #f8f9ff;
+    }
+
+    .ai-caption strong {
+      font-size: 0.95rem;
+    }
+
+    .paragraphs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .paragraphs p {
+      margin: 0;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f5f7fb;
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1080px) {
+      .main-area {
+        flex-direction: column;
+      }
+
+      .figure-info {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="panel upload-panel" id="uploadPanel">
+      <div>
+        <h2>PDF Upload Panel (A)</h2>
+        <p>Drag a PDF here or use the file input to simulate upload.</p>
+      </div>
+      <label class="upload-drop" for="pdfInput">
+        <strong>Click to Select PDF</strong>
+        <input id="pdfInput" type="file" accept="application/pdf" style="display:none" />
+      </label>
+    </div>
+
+    <div class="panel figure-nav" id="figureNav" aria-label="Figure Navigation Bar (B)"></div>
+
+    <div class="main-area">
+      <div class="figure-preview">
+        <div class="panel figure-box" id="figureBox">Figure Preview</div>
+        <div class="panel">
+          <div class="section-title">Original Caption</div>
+          <p id="originalCaption">Select a figure to view details.</p>
+        </div>
+      </div>
+
+      <div class="figure-info">
+        <div class="panel caption-editor">
+          <div class="section-title">Caption Editor (D)</div>
+          <textarea id="captionEditor" placeholder="Edit the caption here..."></textarea>
+        </div>
+
+        <div class="panel">
+          <div class="section-title">Caption Rating (F)</div>
+          <div class="rating-stars">
+            <span id="starDisplay" class="stars">★★★★★</span>
+            <span id="numericRating">0 / 5</span>
+          </div>
+          <p id="ratingExplanation" style="margin-top: 8px; font-size: 0.9rem; color: #5f6f82;">
+            Rating explanation will appear here.
+          </p>
+        </div>
+
+        <div class="panel">
+          <div class="section-title">Caption Analysis (Check Table) (E)</div>
+          <div class="checklist" id="checklist"></div>
+        </div>
+
+        <div class="panel">
+          <div class="section-title">Explanation for the Rating (G)</div>
+          <p id="longExplanation" style="margin:0; font-size:0.9rem; color:#334">
+            Select a figure to view the detailed explanation.
+          </p>
+        </div>
+
+        <div class="panel">
+          <div class="section-title">Machine-generated Captions &amp; Ratings (H)</div>
+          <div class="ai-caption" id="shortCaption"></div>
+          <div class="ai-caption" id="longCaption"></div>
+        </div>
+
+        <div class="panel">
+          <div class="section-title">Figure-mentioning Paragraphs (I)</div>
+          <div class="paragraphs" id="paragraphList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mock data representing figures and their associated information
+    const figures = [
+      {
+        id: 1,
+        title: 'Figure 1',
+        imageLabel: 'Accuracy over epochs',
+        originalCaption: 'Training and validation accuracy across 100 epochs for three model variants.',
+        rating: 4,
+        ratingExplanation: 'Strong coverage of key trends but could elaborate on model variant differences.',
+        checklist: {
+          helpfulness: true,
+          ocr: false,
+          relation: true,
+          stats: true,
+          takeaway: true,
+          visual: false,
+        },
+        aiShortCaption: {
+          text: 'Accuracy improves steadily before converging near epoch 60.',
+          rating: 3,
+        },
+        aiLongCaption: {
+          text: 'Three model variants are compared with training and validation accuracy, showing variant C outperforming the others after epoch 40.',
+          rating: 5,
+        },
+        paragraphs: [
+          'Figure 1 illustrates how the accuracy evolves during training and highlights the late-stage convergence.',
+          'As seen in Figure 1, variant C maintains a higher validation accuracy after epoch 40.',
+        ],
+      },
+      {
+        id: 2,
+        title: 'Figure 2',
+        imageLabel: 'Confusion Matrix',
+        originalCaption: 'Confusion matrix on the test set with emphasis on misclassified classes.',
+        rating: 2,
+        ratingExplanation: 'Caption describes the figure generally but lacks numeric specifics for key confusions.',
+        checklist: {
+          helpfulness: false,
+          ocr: false,
+          relation: true,
+          stats: false,
+          takeaway: false,
+          visual: true,
+        },
+        aiShortCaption: {
+          text: 'Confusions occur mainly between classes B and D.',
+          rating: 2,
+        },
+        aiLongCaption: {
+          text: 'The confusion matrix reveals that class B is often mistaken for D (32%) while class C maintains high precision.',
+          rating: 4,
+        },
+        paragraphs: [
+          'Figure 2 emphasizes the challenging distinction between classes B and D.',
+          'The confusion matrix (Figure 2) highlights that class C remains the most reliable prediction.',
+        ],
+      },
+      {
+        id: 3,
+        title: 'Figure 3',
+        imageLabel: 'Ablation Study Results',
+        originalCaption: 'Ablation study showing the impact of removing modules on F1 score.',
+        rating: 5,
+        ratingExplanation: 'Comprehensive coverage of metrics and key insights about module contributions.',
+        checklist: {
+          helpfulness: true,
+          ocr: true,
+          relation: true,
+          stats: true,
+          takeaway: true,
+          visual: true,
+        },
+        aiShortCaption: {
+          text: 'Removing the attention module drops F1 below 70%.',
+          rating: 4,
+        },
+        aiLongCaption: {
+          text: 'F1 score declines from 86% to 68% when the attention module is omitted, demonstrating its critical role in performance.',
+          rating: 5,
+        },
+        paragraphs: [
+          'Figure 3 presents the ablation analysis where each component is removed individually.',
+          'The figure shows attention contributes the largest share of performance improvements.',
+          'In Figure 3 we also report a baseline where all modules are included for comparison.',
+        ],
+      },
+    ];
+
+    const checklistLabels = {
+      helpfulness: 'Helpfulness',
+      ocr: 'OCR',
+      relation: 'Relation',
+      stats: 'Stats',
+      takeaway: 'Takeaway',
+      visual: 'Visual',
+    };
+
+    const state = {
+      selectedFigure: null,
+      currentCaption: '',
+    };
+
+    /**
+     * Render the navigation bar with figure buttons.
+     */
+    function renderFigureNav() {
+      const nav = document.getElementById('figureNav');
+      nav.innerHTML = '';
+
+      figures.forEach((figure) => {
+        const btn = document.createElement('button');
+        btn.textContent = figure.title;
+        if (state.selectedFigure && state.selectedFigure.id === figure.id) {
+          btn.classList.add('active');
+        }
+        btn.addEventListener('click', () => selectFigure(figure.id));
+        nav.appendChild(btn);
+      });
+    }
+
+    /**
+     * Update the UI with the selected figure's information.
+     * @param {number} figureId
+     */
+    function selectFigure(figureId) {
+      const figure = figures.find((f) => f.id === figureId);
+      if (!figure) return;
+
+      state.selectedFigure = figure;
+      state.currentCaption = figure.originalCaption;
+
+      document.getElementById('figureBox').textContent = `${figure.title}: ${figure.imageLabel}`;
+      document.getElementById('originalCaption').textContent = figure.originalCaption;
+
+      const textarea = document.getElementById('captionEditor');
+      textarea.value = state.currentCaption;
+
+      updateRating(figure.rating, figure.ratingExplanation);
+      renderChecklist(figure.checklist);
+      renderAICaptions(figure);
+      renderParagraphs(figure.paragraphs);
+
+      renderFigureNav();
+    }
+
+    /**
+     * Update the rating stars, numeric value, and explanation text.
+     * @param {number} rating
+     * @param {string} explanation
+     */
+    function updateRating(rating, explanation) {
+      const starDisplay = document.getElementById('starDisplay');
+      const numeric = document.getElementById('numericRating');
+
+      const filledStars = '★'.repeat(rating);
+      const emptyStars = '☆'.repeat(5 - rating);
+      starDisplay.textContent = filledStars + emptyStars;
+      numeric.textContent = `${rating} / 5`;
+      document.getElementById('ratingExplanation').textContent = explanation;
+    }
+
+    /**
+     * Render the checklist indicators.
+     * @param {Record<string, boolean>} checklist
+     */
+    function renderChecklist(checklist) {
+      const checklistContainer = document.getElementById('checklist');
+      checklistContainer.innerHTML = '';
+
+      Object.entries(checklistLabels).forEach(([key, label]) => {
+        const item = document.createElement('div');
+        item.className = 'check-item';
+
+        const indicator = document.createElement('span');
+        indicator.className = `status-indicator ${checklist[key] ? 'status-true' : 'status-false'}`;
+
+        const text = document.createElement('span');
+        text.textContent = label;
+
+        item.appendChild(indicator);
+        item.appendChild(text);
+        checklistContainer.appendChild(item);
+      });
+    }
+
+    /**
+     * Render short and long AI captions.
+     * @param {object} figure
+     */
+    function renderAICaptions(figure) {
+      const shortContainer = document.getElementById('shortCaption');
+      shortContainer.innerHTML = `
+        <strong>Short Caption</strong>
+        <span>${figure.aiShortCaption.text}</span>
+        <span>Rating: ${figure.aiShortCaption.rating}/5</span>
+      `.trim();
+
+      const longContainer = document.getElementById('longCaption');
+      longContainer.innerHTML = `
+        <strong>Long Caption</strong>
+        <span>${figure.aiLongCaption.text}</span>
+        <span>Rating: ${figure.aiLongCaption.rating}/5</span>
+      `.trim();
+
+      document.getElementById('longExplanation').textContent = figure.ratingExplanation;
+    }
+
+    /**
+     * Render the paragraphs related to the figure.
+     * @param {string[]} paragraphs
+     */
+    function renderParagraphs(paragraphs) {
+      const list = document.getElementById('paragraphList');
+      list.innerHTML = '';
+      paragraphs.forEach((para) => {
+        const p = document.createElement('p');
+        p.textContent = para;
+        list.appendChild(p);
+      });
+    }
+
+    /**
+     * Calculate a fake rating based on caption length.
+     * Short captions score lower while longer, detailed captions score higher.
+     * @param {string} caption
+     */
+    function calculateRating(caption) {
+      const length = caption.trim().split(/\s+/).filter(Boolean).length;
+      if (length === 0) return { rating: 0, explanation: 'No caption provided yet.' };
+      if (length < 10) return { rating: 2, explanation: 'Caption is too short to be informative.' };
+      if (length < 25) return { rating: 3, explanation: 'Decent caption but consider adding more detail.' };
+      if (length < 45) return { rating: 4, explanation: 'Good coverage of the figure details.' };
+      return { rating: 5, explanation: 'Excellent detail and clarity in the caption.' };
+    }
+
+    // Handle caption editing
+    document.getElementById('captionEditor').addEventListener('input', (event) => {
+      const caption = event.target.value;
+      state.currentCaption = caption;
+      const { rating, explanation } = calculateRating(caption);
+      updateRating(rating, explanation);
+    });
+
+    // Handle file selection and log the selected file name.
+    document.getElementById('pdfInput').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        console.log(`PDF selected: ${file.name}`);
+      }
+    });
+
+    // Initial render of navigation and select the first figure by default.
+    window.addEventListener('DOMContentLoaded', () => {
+      renderFigureNav();
+      if (figures.length) {
+        selectFigure(figures[0].id);
+      }
+    });
+  </script>
+</body>
+</html>

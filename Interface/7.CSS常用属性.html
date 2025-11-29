@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS常用选择器</title>
+
+  <style>
+    .block {
+      display: block;
+      width: 200px;
+      height: 100px;
+      background-color: lightblue;
+      margin-bottom: 10px;
+    }
+
+    .inline {
+      display: inline;
+      color: green;
+      font-size: 20px;
+    }
+
+    .inline-block {
+      display: inline-block;
+      width: 150px;
+      height: 100px;
+      background-color: lightcoral;
+    }
+
+    .div-inline {
+      display: inline;
+      color: purple;
+      font-size: 18px;
+      border: 1px solid black;
+      padding: 5px;
+    }
+
+    .span-inline-block {
+      display: inline-block;
+      width: 120px;
+      height: 80px;
+      background-color: lightgreen;
+      border: 1px solid black;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="font:bolder 50px 'KaiTi';">这是一个font字体选择器示例</h1>
+  <p style="line-height: 40px">这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本这一段长文本</p>
+
+  <div class="block">这是一个div区块</div>
+  <span class="inline">这是一个行内元素</span>
+  <img src="#" alt="示例图片" class="inline-block">
+
+  <h2>display</h2>
+  <div class="div-inline">这是一个转换成行内元素的div标签</div>
+  <span class="span-inline-block">这是一个转化成行内块元素的span元素</span>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS基础语法</title>
+</head>
+<body>
+  
+  <script>
+    var message = "Hello, JavaScript!";
+    let y=5;
+    const PI=3.14;
+    var a;
+    let empty=null;
+    console.log(message,y,PI);
+
+    let age=8;
+    if(age>=18){
+      console.log("成年人"); 
+    }else{
+      console.log("未成年人");  
+    }
+
+    let time=35;
+    if(time<12){
+      console.log("上午好");
+    }else if(time===12){
+      console.log("中午好");
+    }else{  
+      console.log("下午好");
+    }
+
+    for(let i=1;i<=5;i++){
+      console.log("循环次数："+i);
+    }
+    function greet(name){
+      return "你好，"+name+"！";
+    }
+    console.log(greet("小明"));
+
+    while(y>0){
+      console.log("当前y的值为："+y);
+      y--;
+    } 
+
+    for(let i=1;i<=5;i++){
+      if(i===3){
+        console.log("跳过数字3");
+        continue;
+      }
+      console.log("数字："+i);
+    }
+
+    function factorial(n){
+      if(n===0 || n===1){
+        return 1;
+      }else{
+        return n*factorial(n-1);
+      }
+    }
+
+    console.log("5的阶乘是："+factorial(5));
+
+    function hello(){ 
+      console.log("Hello函数被调用");
+    }
+    hello();
+
+    function hello_with_return(){ 
+      return "hello world return value"
+    } 
+
+    let aa=hello_with_return();
+    console.log(aa);
+    console.log(hello_with_return())
+
+    function hello_with_name(name){
+      console.log("hello, "+name);
+    }
+
+    hello_with_name("ruhua");
+  </script>
+</body>
+</html>

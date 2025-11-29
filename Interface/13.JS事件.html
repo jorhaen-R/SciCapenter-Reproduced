@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JS事件处理</title>
+</head>
+<body>
+  <button onclick="click_event()">这是一个点击事件的按钮 </button>
+    <input type="button" value="点击我" onfocus="focus_event()" onclear="clear_event()">
+    <script>
+      document.querySelector("button").onclick=function(){
+        alert("按钮被点击了！");
+      }
+      function click_event(){
+        alert("按钮被点击了！");
+      }
+      function change_color(){
+        document.body.style.backgroundColor="lightblue";
+      }
+      function focus_event(){
+        alert("输入框获得了焦点");
+      }
+      function clear_event(){
+        alert("输入框内容被清除了");
+      }
+    </script>
+ 
+</body>
+</html>

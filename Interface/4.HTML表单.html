@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML表单</title>
+</head>
+<body>
+  
+  <form action="/submit" method="post">
+    <label for="name">姓名:</label>
+    <input type="text" id="name" name="name" required placeholder="请输入你的名字">
+    <br><br>
+
+    <label for="email">电子邮件:</label>
+    <input type="email" id="email" name="email" required value="请输入你的电子邮件">
+    <br><br>
+
+    <label for="password">密码:</label>
+    <input type="password" id="password" name="password" required>
+    <br><br>
+
+    <label for="age">年龄:</label>
+    <input type="number" id="age" name="age" min="1" max="120">
+    <br><br>
+
+
+    <label>性别：</label>
+    <input type="radio" name ="gender">男
+    <input type="radio" name="gender">女
+    <input type="radio" name="gender">其他
+    
+    <br><br>
+    <lable>爱好：</lable>
+    <input type="checkbox" name="hobby" value="reading">阅读
+    <input type="checkbox" name="hobby" value="traveling">旅行
+
+    <br><br>
+    <input type="submit">
+</body>
+</html>

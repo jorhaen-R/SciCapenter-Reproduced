@@ -1,0 +1,389 @@
+{
+  "results": [
+    {
+      "figure_id": "Table 1",
+      "fig_type": "Table",
+      "page": 5,
+      "caption": "Table 1: We leverage the NASA Task Load Index method to assess workload on five-point scales, under conditions of free",
+      "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Table1-1.png",
+      "image_text": [
+        "Mental",
+        "Demand",
+        "2.93",
+        "[2.40,",
+        "3.47]",
+        "2.53",
+        "[1.91,",
+        "3.16]",
+        "0.233",
+        "3.80",
+        "[3.32,",
+        "4.28]",
+        "2.53",
+        "[1.91,",
+        "3.16]",
+        "<0.001***",
+        "Physical",
+        "Demand",
+        "1.87",
+        "[1.40,",
+        "2.33]",
+        "1.93",
+        "[1.40,",
+        "2.47]",
+        "0.774",
+        "2.20",
+        "[1.68,",
+        "2.72]",
+        "1.87",
+        "[1.40,",
+        "2.33]",
+        "0.019",
+        "Temporal",
+        "Demand",
+        "1.87",
+        "[1.36,",
+        "2.37]",
+        "1.53",
+        "[1.18,",
+        "1.89]",
+        "0.096",
+        "3.20",
+        "[2.53,",
+        "3.87]",
+        "2.40",
+        "[1.74,",
+        "3.06]",
+        "0.005**",
+        "Performance",
+        "2.47",
+        "[1.88,",
+        "3.05]",
+        "2.47",
+        "[1.75,",
+        "3.19]",
+        "1.000",
+        "2.73",
+        "[2.12,",
+        "3.34]",
+        "2.13",
+        "[1.48,",
+        "2.79]",
+        "0.095",
+        "Effort",
+        "2.87",
+        "[2.36,",
+        "3.37]",
+        "2.40",
+        "[1.90,",
+        "2.90]",
+        "0.150",
+        "2.93",
+        "[2.40,",
+        "3.47]",
+        "2.33",
+        "[1.84,",
+        "2.83]",
+        "0.057",
+        "Frustration",
+        "2.33",
+        "[1.62,",
+        "3.05]",
+        "1.40",
+        "[1.12,",
+        "1.68]",
+        "0.008**",
+        "2.73",
+        "[2.06,",
+        "3.41]",
+        "1.67",
+        "[1.21,",
+        "2.12]",
+        "0.001**",
+        "Overall",
+        "2.39",
+        "[2.05,",
+        "2.73]",
+        "2.04",
+        "[1.71,",
+        "2.38]",
+        "0.046*",
+        "2.93",
+        "[2.52,",
+        "3.34]",
+        "2.16",
+        "[1.74,",
+        "2.57]",
+        "<0.001***",
+        "Avg.",
+        "95%",
+        "CI",
+        "Avg.",
+        "95%",
+        "CI",
+        "Avg.",
+        "95%",
+        "CI",
+        "Avg.",
+        "95%",
+        "CI",
+        "p-value",
+        "User",
+        "Only",
+        "With",
+        "System",
+        "p-value",
+        "User",
+        "Only",
+        "With",
+        "System",
+        "Free",
+        "Writing",
+        "Time-Constrained",
+        "Writing"
+      ],
+      "paragraphs": [
+        {
+          "page": 5,
+          "text": "SciCapenter significantly reduced cognitive loads in caption writ- ing for participants, particularly under time constraints. In the main study, there were a total of 15 participants. We computed the NASA- Task Load Index for each condition, employing a five-point scale ranging from Very Low to Very High and from Perfect to Failure. The results are shown in Table 1, demonstrating that SciCapenter significantly reduced cognitive load for users. With the assistance of SciCapenter, users experienced reduced effort, frustration, and mental demand when composing captions. This effect was more pronounced under time constraints, with the overall NASA Task Index (Table 1) dropping from 2.93 to 2.16, compared to a smaller reduction from 2.39 to 2.04 in free writing. Additionally, the de- crease in frustration was the most significant, with the workload falling from 2.33 to 1.40 in free writing, and from 2.73 to 1.67 in time-limited scenarios.",
+          "bbox": {
+            "x1": 53.09000015258789,
+            "y1": 299.6366882324219,
+            "x2": 295.55670166015625,
+            "y2": 463.6392822265625
+          }
+        },
+        {
+          "page": 6,
+          "text": "Table 1: We leverage the NASA Task Load Index method to assess workload on five-point scales, under conditions of free writing and time-constrained writing, both with and without SciCapenter. A lower score indicates a lower perceived workload. The p-values are obtained by comparing the user-only and with-system settings (paired t-test, two tailed, N=15). The 95% confidence intervals are estimated using t-distribution. With SciCapenter, users had less workload in both free writing and time-constrained writing scenarios, with the most notable improvements seen in the Mental Demand and Frustration.",
+          "bbox": {
+            "x1": 53.44900131225586,
+            "y1": 214.40493774414062,
+            "x2": 559.7349243164062,
+            "y2": 267.29559326171875
+          }
+        }
+      ]
+    },
+    {
+      "figure_id": "Figure 3",
+      "fig_type": "Figure",
+      "page": 5,
+      "caption": "Figure 3: Comparison between six different elements provided by SciCapenter. Left figure shows the mean rating and standard",
+      "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Figure3-1.png",
+      "image_text": [],
+      "paragraphs": [
+        {
+          "page": 1,
+          "text": "Captions for scientific figures, such as charts, bar charts, and pie charts, are crucial to readers. Readers comprehend and recall the un- derlying information significantly better when reading charts with captions, as compared with reading charts alone [2, 13, 30, 40]. Un- fortunately, authors do not pay needed attention to crafting figure captions in their papers. A recent study showed that over half of the figure captions in arXiv papers were rated as not helpful by Ph.D. students [19]. Meanwhile, with advances in deep learning, com- putational models now have a rich set of capabilities surrounding scientific figures: generating captions of decent quality [24, 37, 49], analyzing the information in figure images [6, 26, 35], and evaluat- ing the usefulness of figure captions [18]. However, literature has little to say about how these technologies could be used to help academics who write figure captions for their papers. The user stud- ies of these technologies were almost all conducted from a reader perspective, i.e., having participants read the machine-generated outputs and judge their quality [19, 51, 52]. The user needs of writ- ers and readers are known to be different [3, 8, 14, 44]; a piece of machine-generated text might be of lower readability but could serve as a useful draft for writers to work off of [9, 10, 28]. A few prior works, such as Intentable [5], InkSight [33], and AutoTitle [34], built systems that generate captions considering writers’ intentions and allow authors to refine visualization captions and titles, but they did not focus on composing figure captions for scholarly articles. This paper introduces SciCapenter, a system that puts together a set of cutting-edge AI technologies surrounding scientific figures to help users write figure captions in scholarly articles (Figure 1). Users first upload the PDF file of their working draft to SciCapen- ter, which will automatically extract all the figures and their cur- rent captions. Users can then browse and pinpoint figures they wish to modify. Upon selecting a figure, SciCapenter displays the figure image, its current caption, paragraphs in the article referencing the exact figure (e.g., “Figure 3 demonstrates...”), and a series of AI-generated insights. Specifically:",
+          "bbox": {
+            "x1": 317.6409912109375,
+            "y1": 319.1458740234375,
+            "x2": 559.7205810546875,
+            "y2": 689.7562866210938
+          }
+        },
+        {
+          "page": 5,
+          "text": "Machine-generated ratings and labels were deemed more useful than machine-generated captions. We asked participants to rate the overall SciCapenter in terms of the following three questions on a five-point Likert scale: (i) How difficult is it to use the system? (Rating scale: Very Easy to Very Difficult), (ii) How useful is the system in assisting with caption writing? (Overall) (Rating scale: Very Bad to Very Good), and (iii) How fast is the system response? (Rating scale: Very Slow to Very Fast). Six more questions about the satisfaction level (a five-point Likert scale from Very Bad to Very Good) toward the six components (i.e., check table, caption rating, explanation for the rating, long caption, short caption, and referred paragraph) were also asked. Figure 3 shows the results. Overall, participants expressed high satisfaction with our sys- tem’s usability (average rating = 3.80, SD = 0.86, n = 15) and its ease of use (average rating = 1.80, SD = 0.68, n = 15). The response time got an average rating of 3.40 and was not considered too slow. We also discovered that, within SciCapenter, participants found machine-generated ratings and predictions more useful than machine-generated captions. Even extracted paragraphs that men- tioned the figure were deemed more helpful. Both long and short captions had the lowest average preference rating. Analyzing the",
+          "bbox": {
+            "x1": 53.50199890136719,
+            "y1": 479.21075439453125,
+            "x2": 295.55938720703125,
+            "y2": 709.1402587890625
+          }
+        },
+        {
+          "page": 6,
+          "text": "Figure 3: Comparison between six different elements provided by SciCapenter. Left figure shows the mean rating and standard deviation of a five-point scale for different elements. The check table and referred paragraph were rated highest, while short and long caption had the lowest score, indicating they were the least favored elements according to the participants. Right figure shows a breakdown of the five-point scale with different colors representing each rating. The short caption exhibit a more varied distribution of opinions.",
+          "bbox": {
+            "x1": 53.798030853271484,
+            "y1": 412.3963623046875,
+            "x2": 558.2049560546875,
+            "y2": 465.109619140625
+          }
+        },
+        {
+          "page": 6,
+          "text": "• Present contextual or analytical information relevant to the writing task. While machine-generated captions were generally deemed useful, our results suggested that the benefits of presenting contextual (e.g., figure-mentioning paragraphs) or analytical (e.g., check tables, ratings) infor- mation relevant to the writing task might be more prevalent (Figure 3). • Provide concrete, actionable suggestions for writing. SciCapenter analyzed the current situation without offer- ing specific guidance on enhancing a caption or providing fillable caption templates, leading to many participant com- plaints (Section 5). Future developers of writing assistants for caption writing should aim to provide more targeted, ac- tionable suggestions. Continued research and development are crucial for this.",
+          "bbox": {
+            "x1": 333.9220275878906,
+            "y1": 503.0763244628906,
+            "x2": 559.7396240234375,
+            "y2": 667.1332397460938
+          }
+        }
+      ]
+    },
+    {
+      "figure_id": "Figure 2",
+      "fig_type": "Figure",
+      "page": 4,
+      "caption": "Figure 2: Before the study, participants provided ten papers from their research domain, either intended for reading or briefly",
+      "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Figure2-1.png",
+      "image_text": [],
+      "paragraphs": [
+        {
+          "page": 4,
+          "text": "Pre-Study Preparation. We asked each participant to provide ten scientific papers from their research domain that they intended to read or had briefly skimmed but had not read in-depth. This approach ensured participants had some contextual understanding of the article but were not biased by the original captions. After receiving these articles, we processed them through SciCapenter, selecting six figures with the lowest quality score rated by Sci- Capenter. We then manually redacted the captions from these selected papers using Adobe Acrobat Pro (Figure 2). All these ma- terials were prepared before the user study. We tried our best to select only one figure per article. However, pdfparser2 failed to parse papers from some specific domains much more frequently, so this was not always feasible. In cases where two figures were selected from the same paper for a participant, they received a PDF where both captions were redacted.",
+          "bbox": {
+            "x1": 53.46699905395508,
+            "y1": 470.89776611328125,
+            "x2": 295.5599365234375,
+            "y2": 634.9192504882812
+          }
+        },
+        {
+          "page": 5,
+          "text": "Figure 2: Before the study, participants provided ten papers from their research domain, either intended for reading or briefly skimmed but not read in-depth. We processed these papers through SciCapenter, choosing six target figures and manually redacting their captions. Participants received the redacted PDFs in the user study and were asked to write captions for the figures.",
+          "bbox": {
+            "x1": 53.79800033569336,
+            "y1": 188.7896728515625,
+            "x2": 558.4495239257812,
+            "y2": 230.588623046875
+          }
+        }
+      ]
+    },
+    {
+      "figure_id": "Figure 1",
+      "fig_type": "Figure",
+      "page": 1,
+      "caption": "Figure 1: Overview of SciCapenter system interface. PDF Upload Panel (A): A drag-and-drop interface for uploading PDF files.",
+      "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Figure1-1.png",
+      "image_text": [],
+      "paragraphs": [
+        {
+          "page": 1,
+          "text": "Captions for scientific figures, such as charts, bar charts, and pie charts, are crucial to readers. Readers comprehend and recall the un- derlying information significantly better when reading charts with captions, as compared with reading charts alone [2, 13, 30, 40]. Un- fortunately, authors do not pay needed attention to crafting figure captions in their papers. A recent study showed that over half of the figure captions in arXiv papers were rated as not helpful by Ph.D. students [19]. Meanwhile, with advances in deep learning, com- putational models now have a rich set of capabilities surrounding scientific figures: generating captions of decent quality [24, 37, 49], analyzing the information in figure images [6, 26, 35], and evaluat- ing the usefulness of figure captions [18]. However, literature has little to say about how these technologies could be used to help academics who write figure captions for their papers. The user stud- ies of these technologies were almost all conducted from a reader perspective, i.e., having participants read the machine-generated outputs and judge their quality [19, 51, 52]. The user needs of writ- ers and readers are known to be different [3, 8, 14, 44]; a piece of machine-generated text might be of lower readability but could serve as a useful draft for writers to work off of [9, 10, 28]. A few prior works, such as Intentable [5], InkSight [33], and AutoTitle [34], built systems that generate captions considering writers’ intentions and allow authors to refine visualization captions and titles, but they did not focus on composing figure captions for scholarly articles. This paper introduces SciCapenter, a system that puts together a set of cutting-edge AI technologies surrounding scientific figures to help users write figure captions in scholarly articles (Figure 1). Users first upload the PDF file of their working draft to SciCapen- ter, which will automatically extract all the figures and their cur- rent captions. Users can then browse and pinpoint figures they wish to modify. Upon selecting a figure, SciCapenter displays the figure image, its current caption, paragraphs in the article referencing the exact figure (e.g., “Figure 3 demonstrates...”), and a series of AI-generated insights. Specifically:",
+          "bbox": {
+            "x1": 317.6409912109375,
+            "y1": 319.1458740234375,
+            "x2": 559.7205810546875,
+            "y2": 689.7562866210938
+          }
+        },
+        {
+          "page": 2,
+          "text": "Figure 1: Overview of SciCapenter system interface. PDF Upload Panel (A): A drag-and-drop interface for uploading PDF files. Navigation Bar (B): A horizontal bar showing a list of figures extracted from the uploaded document. Figure Image (C): The main area displaying the image of the selected figure. Caption Editor (D): A text box for editing the caption of the selected figure. Caption Rating (F): A feedback system that allows GPT to rate the quality of the caption, represented by a star rating. Caption Analysis (Check Table) (E): Icons indicating the presence or absence of key elements in the caption, such as helpfulness or takeaway message. Explanation for the Rating (G): A textual explanation providing insight into why a particular star rating was given to the caption. Machine-generated Captions & Their Ratings (H): This section includes long and short captions generated by AI models, each accompanied by their respective star ratings. Figure-mentioning Paragraphs (I): Paragraphs in the document that mention the target figure, providing context or additional information.",
+          "bbox": {
+            "x1": 53.44900131225586,
+            "y1": 492.08135986328125,
+            "x2": 559.73828125,
+            "y2": 588.629638671875
+          }
+        },
+        {
+          "page": 2,
+          "text": "• SciCapenter offers two machine-generated captions (Fig- ure 1.H): one long, another short, using a cutting-edge AI model. We decided to provide captions with two different lengths to address the dual needs of caption writers: longer captions are more informative for readers [19], while shorter captions help authors meet space constraints in papers. • SciCapenter provides a checklist (Figure 1.E), predicted by an AI model, detailing essential caption features (e.g., does the caption highlight the central message? Does it reference figure text?).",
+          "bbox": {
+            "x1": 69.76499938964844,
+            "y1": 595.9913330078125,
+            "x2": 295.56011962890625,
+            "y2": 705.1952514648438
+          }
+        },
+        {
+          "page": 2,
+          "text": "• SciCapenter rates all captions (Figure 1.F), including the author’s original and all AI-generated ones, and also shows the rationale behind each rating (Figure 1.G). Users can modify captions directly in SciCapenter (Figure 1.D), sub- mit them for updated ratings, and refine them iteratively.",
+          "bbox": {
+            "x1": 333.9219970703125,
+            "y1": 595.8182983398438,
+            "x2": 559.7173461914062,
+            "y2": 650.4013061523438
+          }
+        },
+        {
+          "page": 3,
+          "text": "SciCapenter is a comprehensive system that includes a web inter- face and a caption editing function. Figure 1 shows a screenshot of the entire system. To begin using SciCapenter, users start by uploading their PDF file in the PDF upload panel (Figure 1.A). Once the PDF file is processed, the extracted figures are displayed on the navigation bar (Figure 1.B). Users can click on a figure to access the detailed information. Upon clicking, the selected figure (Fig- ure 1.C), along with complete information, appears on the right side of the window. On the right side of the window, users have access to several features that assist them in composing captions, including a checking table (Figure 1.E), GPT evaluation and expla- nation (Figure 1.F and 1.G), generated captions - long/short versions (Figure 1.H), and (4) referred paragraphs (Figure 1.I). Users are able to edit the caption in the caption editor (Figure 1.D) and resubmit it for re-evaluation. In the backend, once a user submits a pdf file, SciCapenter will store the file in our MongoDB and extract figures, captions, abstracts, and contents using pdffigure2 [7].1 The extracted figure list will then be presented in the navigation bar (Figure 1.B). Regular expressions are then used to identify the corresponding referred paragraphs (Figure 1.I) based on the figure index, similar to how Huang et al. extracted figure-mentioning paragraphs [19]. The check table (Figure 1.E) detects whether the written caption describes or expresses the following six aspects [18]:",
+          "bbox": {
+            "x1": 317.62298583984375,
+            "y1": 155.37185668945312,
+            "x2": 559.7203369140625,
+            "y2": 416.3932800292969
+          }
+        },
+        {
+          "page": 3,
+          "text": "Missed aspects would be highlighted as a warning for users. The aspect detection model is a SciBert [1] model fine-tuned on 3,159 human annotations, which achieved an F1 score of 0.64 [18]. The caption rating and its explanation (Figure 1.F and Figure 1.G) are",
+          "bbox": {
+            "x1": 317.9549865722656,
+            "y1": 621.6968994140625,
+            "x2": 558.2040405273438,
+            "y2": 663.540283203125
+          }
+        },
+        {
+          "page": 4,
+          "text": "obtained by calling OpenAI’s GPT-3.5-turbo API [42] with the prompt shown in Appendix A in a zero-shot manner. The machine- generated captions (Figure 1.H) are generated with the model pro- posed by Huang et al. [19]. Specifically, we obtained their Pegasus𝑃+𝑂 and Pegasus𝑃+𝑂+𝐵model, figure captioning models that generate captions by summarising the figure-mentioning paragraphs. The Pegasus𝑃+𝑂+𝐵model is trained with captions longer than 30 words so it naturally generates longer captions. In SciCapenter, we use the default decoding strategy (beam search with the number of beams = 5) for text generation.",
+          "bbox": {
+            "x1": 53.79800033569336,
+            "y1": 86.47586822509766,
+            "x2": 297.62158203125,
+            "y2": 194.072265625
+          }
+        },
+        {
+          "page": 9,
+          "text": "The following is the prompt used by SciCapenter to generate the caption rating and its explanation (Figure 1.F and Figure 1.G):",
+          "bbox": {
+            "x1": 53.52899932861328,
+            "y1": 253.23989868164062,
+            "x2": 294.0485534667969,
+            "y2": 273.165283203125
+          }
+        },
+        {
+          "page": 9,
+          "text": "• In the pilot study, the task sequence was ordered 2 -> 4 -> 1 -> 3, with the SciCapenter conditions proceeding first. We ob- served that after participants viewed the six aspects reported in the check table (Figure 1.E), their writings were influenced, for example, to include takeaway messages and figures’ vi- sual features. To minimize this influence, we changed the task order by asking participants to proceed with the condi- tions without SciCapenter first in the formal study. We also included extra instructions clarifying that the six aspects are suggestions, not requirements. • In the pilot study, the rating’s explanation (Figure 1.G) was only visible when users hovered over a small button. We found that participants frequently ignored this explanation. As a result, we modified the interface to display the explana- tion directly. • The missing aspects in the check table (Figure 1.E) were originally tagged with the icon “X”. Users expressed concerns about such a strong rejection symbol. We, therefore, replaced it with a triangle alert symbol.",
+          "bbox": {
+            "x1": 69.76499938964844,
+            "y1": 502.7071838378906,
+            "x2": 295.5633239746094,
+            "y2": 709.1402587890625
+          }
+        },
+        {
+          "page": 9,
+          "text": "• The time constraint for Condition 3 and Condition 4 in the pilot study was set to five minutes. We found that partici- pants were quite stressed and could barely finish the caption. So, we extended the time limit to 8 minutes. • GPT-4 was used for automatic caption evaluation (Figure 1.F and Figure 1.G) in the pilot study. However, the API’s re- sponse time was quite high. Thus, we changed to GPT-3.5- turbo in the main study.",
+          "bbox": {
+            "x1": 333.9219970703125,
+            "y1": 86.2691879272461,
+            "x2": 559.7214965820312,
+            "y2": 172.154296875
+          }
+        }
+      ]
+    },
+    {
+      "figure_id": "Figure 4",
+      "fig_type": "Figure",
+      "page": 6,
+      "caption": "Figure 4: Comparative evaluation of caption quality by three experts, where each caption type—Ground Truth, Summary Short,",
+      "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Figure4-1.png",
+      "image_text": [],
+      "paragraphs": [
+        {
+          "page": 7,
+          "text": "Figure 4: Comparative evaluation of caption quality by three experts, where each caption type—Ground Truth, Summary Short, Summary Long, and GPT-4V—is rated on a scale from rank 1 (highest) to rank 4 (lowest). Both Expert 1 and Expert 2 rated Ground Truth caption as rank 1 most frequently, while Expert 3 had a preference for Summary Short. Notably, Expert 3 rated GPT-4V the lowest, rarely giving it a rank 1, whereas both Expert 1 and Expert 2 often considered GPT-4V as their second choice for rank 1. The variations in evaluations reflect differing perspectives on caption quality and suggest that while Ground Truth captions are generally preferred, there’s a significant disparity in how each expert rates the machine-generated captions.",
+          "bbox": {
+            "x1": 53.50199890136719,
+            "y1": 148.96337890625,
+            "x2": 559.2919921875,
+            "y2": 212.6336669921875
+          }
+        },
+        {
+          "page": 7,
+          "text": "GPT-4V produce significantly better captions than the mod- els used in SciCapenter, potentially altering our study’s conclusions? To explore this, we recruited three professional aca- demic paper editors to assess the quality of captions generated by various models. From the SciCap Challenge dataset [17], we randomly selected 200 figure-caption pairs. For each figure, we generated two captions using models from SciCapenter (Summary Short and Summary Long), one caption using GPT-4V by prompting it with the figure image and figure-mentioning paragraphs, and we also included the original author-written caption (Ground Truth). To ensure a fair comparison in our study, GPT-4V was prompted to generate captions no longer than the author-written captions, acknowledg- ing that readers often favor longer captions. This length constraint aimed to minimize the influence of caption length on quality as- sessment. We recruited three professional editors (Expert 1, 2, and 3) through UpWork,5 all specializing in technical academic articles and native American English speakers. Their backgrounds include one with over ten years of editing experience and a Ph.D. in Comparative Literature, and two from the STEM fields—one in Theoretical Astro- physics and another in Neuroscience—with extensive experience in editing, proofreading, and publishing academic papers. They ranked the captions based on their effectiveness in clarifying the figure’s intended message. The results are shown in Figure 4. Under the caption length constraints, GPT-4V did not outperform Sci- Capenter’s models drastically. Although Experts 1 and 2 preferred GPT-4V’s generation over that of SciCapenter’s models, Expert 3 did not favor it.",
+          "bbox": {
+            "x1": 53.48400115966797,
+            "y1": 231.8720703125,
+            "x2": 296.9962463378906,
+            "y2": 549.3753051757812
+          }
+        }
+      ]
+    }
+  ]
+}

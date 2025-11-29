@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS导入方式</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    @import url("styles.css");  
+    p {
+      color: blue;
+      font-size: 18px;
+    }
+  h2 {
+      color: green;
+    }
+  
+  h3{
+    color:brown
+  }
+  </style>
+</head>
+<body>
+  <p>这是一个使用内部样式表定义的段落，文字颜色为蓝色，字体大小为18px。</p>   
+  <br>
+  <h1 style="color: red">外部样式表示例</h1>
+  <h2>这是一个二级标题，使用内部样式</h2>
+  <h3>这是一个三级标题，使用外部样式</h3>
+</body>
+</html>

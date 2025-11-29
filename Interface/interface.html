@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-g">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplified SciCapenter</title>
+    <style>
+        /* --- Basic Setup & Typography --- */
+        :root {
+            --border-color: #d1d5db;
+            --background-light: #f9fafb;
+            --background-white: #ffffff;
+            --primary-blue: #3b82f6;
+            --text-dark: #1f2937;
+            --text-medium: #4b5563;
+            --text-light: #6b7280;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --border-radius: 0.5rem;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* --- Layout Containers --- */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-grow: 1;
+            gap: 1rem;
+            min-height: 0; /* Important for flex children scrolling */
+        }
+
+        .left-panel, .right-panel {
+            background-color: var(--background-white);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+        }
+
+        .left-panel {
+            flex: 1 1 55%; /* Grow and shrink, base size 55% */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .right-panel {
+            flex: 1 1 45%; /* Grow and shrink, base size 45% */
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto; /* Enable scrolling for the right panel */
+        }
+        
+        /* --- Component Styles (A-I) --- */
+
+        /* A: PDF Upload Panel */
+        .upload-panel {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            background-color: var(--background-white);
+            color: var(--text-medium);
+        }
+
+        /* B: Navigation Bar */
+        .nav-bar {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background-color: var(--background-white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-item {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            background-color: #fff;
+        }
+
+        .nav-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .nav-item.selected {
+            background-color: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        /* C: Figure Image */
+        .figure-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-light);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+
+        /* D-I: Right Panel Components */
+        .panel-section {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+
+        .panel-section h3 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            color: var(--text-medium);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* D: Caption Editor */
+        #caption-editor {
+            width: 100%;
+            min-height: 100px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            border-radius: 0.25rem;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        /* F: Caption Rating */
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .stars {
+            font-size: 1.5rem;
+            color: #facc15; /* yellow-400 */
+        }
+        .score {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* E: Check Table */
+        .check-table {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .check-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+        .check-icon.present {
+            background-color: #22c55e; /* green-500 */
+        }
+        .check-icon.missing {
+            background-color: #ef4444; /* red-500 */
+        }
+        
+        /* H: Machine Captions */
+        .machine-caption {
+            background-color: var(--background-light);
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .machine-caption strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: var(--text-medium);
+        }
+
+        /* I: Paragraphs */
+        .paragraphs-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .paragraph-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .paragraph-item:last-child {
+            border-bottom: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- A: PDF Upload Panel -->
+        <header class="upload-panel">
+            <strong>PDF Upload Panel (A)</strong>
+            <p>Drag & drop a file or click to upload. (Logging to console only)</p>
+            <input type="file" id="pdf-upload">
+        </header>
+
+        <!-- B: Navigation Bar -->
+        <nav class="nav-bar" id="navigation-bar">
+            <!-- Figure items will be dynamically inserted here -->
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- C: Figure Image Panel -->
+            <section class="left-panel">
+                <div class="figure-image-placeholder" id="figure-image-label">
+                    <!-- Figure label will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <!-- Right-Side Panels -->
+            <aside class="right-panel">
+                <!-- D: Caption Editor -->
+                <section class="panel-section">
+                    <h3>Caption Editor (D)</h3>
+                    <textarea id="caption-editor" placeholder="Write your caption here..."></textarea>
+                </section>
+                
+                <!-- F: Caption Rating -->
+                <section class="panel-section">
+                    <h3>Your Caption Rating (F)</h3>
+                    <div class="rating-display">
+                        <span class="stars" id="caption-stars">★★★★☆</span>
+                        <span class="score" id="caption-score">4.0 / 5.0</span>
+                    </div>
+                </section>
+
+                <!-- E: Caption Analysis (Check Table) -->
+                <section class="panel-section">
+                    <h3>Caption Analysis Checklist (E)</h3>
+                    <ul class="check-table" id="check-table">
+                        <!-- Checklist items will be dynamically inserted here -->
+                    </ul>
+                </section>
+
+                <!-- G: Explanation for the Rating -->
+                <section class="panel-section">
+                    <h3>Explanation for the Rating (G)</h3>
+                    <div id="rating-explanation">
+                        <!-- Explanation will be dynamically inserted here -->
+                    </div>
+                </section>
+
+                <!-- H: Machine-generated Captions -->
+                <section class="panel-section">
+                    <h3>Machine-generated Captions (H)</h3>
+                    <div id="machine-captions">
+                        <!-- Machine captions will be dynamically inserted here -->
+                    </div>
+                </section>
+
+                <!-- I: Figure-mentioning Paragraphs -->
+                <section class="panel-section">
+                    <h3>Figure-mentioning Paragraphs (I)</h3>
+                    <div class="paragraphs-list" id="figure-paragraphs">
+                        <!-- Paragraphs will be dynamically inserted here -->
+                    </div>
+                </section>
+            </aside>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- MOCK DATA ---
+            const figures = [
+                {
+                    id: 1,
+                    title: "Figure 1",
+                    imageLabel: "Accuracy over epochs",
+                    originalCaption: "This graph shows the training and validation accuracy over 100 epochs. The model reaches a peak validation accuracy of 92%.",
+                    rating: 4.2,
+                    ratingExplanation: "Good caption. It clearly states what the graph shows and includes a key statistic (92% accuracy). It could be improved by mentioning the takeaway message.",
+                    checklist: { helpfulness: true, ocr: false, relation: true, stats: true, takeaway: false, visual: true },
+                    aiShortCaption: { text: "Training and validation accuracy curves.", rating: 3.1 },
+                    aiLongCaption: { text: "Plot of model accuracy against training epochs for both the training and validation datasets. The final validation accuracy was 92%, indicating good model performance without significant overfitting.", rating: 4.8 },
+                    paragraphs: [
+                        "As shown in Figure 1, the model's performance was evaluated based on its accuracy. The training process was run for 100 epochs to ensure convergence.",
+                        "The results plotted in Figure 1 demonstrate a stable learning curve, with validation accuracy closely tracking the training accuracy, suggesting that the regularization techniques were effective."
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Figure 2",
+                    imageLabel: "System Architecture",
+                    originalCaption: "An overview of our system.",
+                    rating: 1.5,
+                    ratingExplanation: "This caption is too brief. It lacks detail about the components shown in the diagram and doesn't explain their relationships or the overall function of the system.",
+                    checklist: { helpfulness: false, ocr: false, relation: false, stats: false, takeaway: false, visual: true },
+                    aiShortCaption: { text: "System architecture diagram.", rating: 2.0 },
+                    aiLongCaption: { text: "Diagram of the proposed system architecture, illustrating the data flow from the input module, through the processing pipeline, to the final output generation stage. Key components include the data preprocessor, the core model, and the visualization unit.", rating: 4.5 },
+                    paragraphs: [
+                        "Our proposed method, whose architecture is detailed in Figure 2, consists of three main stages.",
+                        "The modular design (see Figure 2) allows for easy replacement of individual components for future experiments."
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Figure 3",
+                    imageLabel: "Geographical Data Points",
+                    originalCaption: "Map showing the location of the samples collected. Red dots indicate positive results and blue dots indicate negative results. Most positive samples are clustered in the northeast region.",
+                    rating: 4.9,
+                    ratingExplanation: "Excellent caption. It clearly explains the visual elements (red/blue dots), relates them to the data (positive/negative results), and provides a key takeaway (northeast cluster).",
+                    checklist: { helpfulness: true, ocr: false, relation: true, stats: true, takeaway: true, visual: true },
+                    aiShortCaption: { text: "Sample collection map with results.", rating: 3.8 },
+                    aiLongCaption: { text: "Geographical distribution of collected samples. Each point on the map represents a sample location, colored red for a positive result and blue for a negative result. A significant concentration of positive results is observed in the northeastern quadrant of the mapped area.", rating: 5.0 },
+                    paragraphs: [
+                        "The geographical spread of our findings is visualized in Figure 3. This spatial analysis was crucial for identifying regional hotspots.",
+                        "Referring to Figure 3, it is evident that there is a strong geographical correlation in the data."
+                    ]
+                }
+            ];
+
+            // --- STATE ---
+            let currentFigureIndex = 0;
+
+            // --- DOM ELEMENT REFERENCES ---
+            const navBar = document.getElementById('navigation-bar');
+            const figureImageLabel = document.getElementById('figure-image-label');
+            const captionEditor = document.getElementById('caption-editor');
+            const captionStars = document.getElementById('caption-stars');
+            const captionScore = document.getElementById('caption-score');
+            const checkTable = document.getElementById('check-table');
+            const ratingExplanation = document.getElementById('rating-explanation');
+            const machineCaptionsContainer = document.getElementById('machine-captions');
+            const figureParagraphsContainer = document.getElementById('figure-paragraphs');
+            const pdfUpload = document.getElementById('pdf-upload');
+
+            // --- RENDER FUNCTIONS ---
+            
+            /**
+             * Updates all UI panels with the data for the selected figure.
+             * @param {number} index - The index of the figure in the `figures` array.
+             */
+            function renderFigure(index) {
+                currentFigureIndex = index;
+                const figure = figures[index];
+
+                // C: Update Figure Image placeholder
+                figureImageLabel.textContent = `Placeholder for: ${figure.imageLabel}`;
+
+                // D: Update Caption Editor
+                captionEditor.value = figure.originalCaption;
+
+                // F: Update Caption Rating
+                updateRatingDisplay(figure.rating, figure.ratingExplanation);
+                
+                // E: Update Checklist
+                checkTable.innerHTML = ''; // Clear previous items
+                for (const [key, value] of Object.entries(figure.checklist)) {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'check-item';
+                    const iconClass = value ? 'present' : 'missing';
+                    listItem.innerHTML = `<span class="check-icon ${iconClass}"></span> ${key.charAt(0).toUpperCase() + key.slice(1)}`;
+                    checkTable.appendChild(listItem);
+                }
+                
+                // G: Update Explanation (handled by updateRatingDisplay)
+
+                // H: Update Machine-generated Captions
+                machineCaptionsContainer.innerHTML = `
+                    <div class="machine-caption">
+                        <strong>Short Caption:</strong>
+                        <span>${figure.aiShortCaption.text}</span>
+                        <em>(Score: ${figure.aiShortCaption.rating})</em>
+                    </div>
+                    <div class="machine-caption">
+                        <strong>Long Caption:</strong>
+                        <span>${figure.aiLongCaption.text}</span>
+                        <em>(Score: ${figure.aiLongCaption.rating})</em>
+                    </div>
+                `;
+
+                // I: Update Figure-mentioning Paragraphs
+                figureParagraphsContainer.innerHTML = ''; // Clear previous paragraphs
+                figure.paragraphs.forEach(p => {
+                    const pElement = document.createElement('p');
+                    pElement.className = 'paragraph-item';
+                    pElement.textContent = p;
+                    figureParagraphsContainer.appendChild(pElement);
+                });
+
+                // B: Update Navigation Bar selection
+                updateNavSelection();
+            }
+            
+            /**
+             * Updates the stars, score, and explanation text for the caption rating.
+             * @param {number} scoreValue - The numeric score (1-5).
+             * @param {string} explanation - The text explanation for the score.
+             */
+            function updateRatingDisplay(scoreValue, explanation) {
+                const roundedScore = Math.round(scoreValue * 10) / 10;
+                captionScore.textContent = `${roundedScore.toFixed(1)} / 5.0`;
+
+                const fullStars = Math.floor(roundedScore);
+                const halfStar = roundedScore % 1 >= 0.5 ? 1 : 0;
+                const emptyStars = 5 - fullStars - halfStar;
+                captionStars.textContent = '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars);
+                
+                ratingExplanation.textContent = explanation;
+            }
+
+            /**
+             * Updates the 'selected' class on the navigation bar items.
+             */
+            function updateNavSelection() {
+                const navItems = navBar.querySelectorAll('.nav-item');
+                navItems.forEach((item, index) => {
+                    if (index === currentFigureIndex) {
+                        item.classList.add('selected');
+                    } else {
+                        item.classList.remove('selected');
+                    }
+                });
+            }
+
+            // --- INITIALIZATION ---
+
+            /**
+             * Sets up the application, populates the nav bar, and renders the initial figure.
+             */
+            function initialize() {
+                // B: Populate Navigation Bar
+                figures.forEach((figure, index) => {
+                    const navItem = document.createElement('div');
+                    navItem.className = 'nav-item';
+                    navItem.textContent = figure.title;
+                    navItem.setAttribute('data-index', index);
+                    
+                    navItem.addEventListener('click', () => {
+                        renderFigure(index);
+                    });
+                    
+                    navBar.appendChild(navItem);
+                });
+
+                // Render the first figure by default
+                renderFigure(0);
+            }
+
+            // --- EVENT LISTENERS ---
+
+            // A: PDF Upload Listener
+            pdfUpload.addEventListener('change', (event) => {
+                if (event.target.files && event.target.files[0]) {
+                    const file = event.target.files[0];
+                    console.log(`File selected: ${file.name}, Size: ${file.size} bytes. (No parsing is implemented)`);
+                    // In a real app, you would handle the file upload here.
+                }
+            });
+
+            // D: Caption Editor Listener
+            captionEditor.addEventListener('input', (event) => {
+                const text = event.target.value;
+                // Fake real-time rating calculation based on length
+                let fakeScore = (text.length / 50); // 1 point per 50 chars
+                if (fakeScore > 5) fakeScore = 5;
+                if (fakeScore < 1 && text.length > 0) fakeScore = 1;
+                if(text.length === 0) fakeScore = 0;
+
+                const fakeExplanation = `Rating updated based on caption length. A good caption is typically between 150 and 250 characters. Current length: ${text.length}.`;
+                
+                updateRatingDisplay(fakeScore, fakeExplanation);
+            });
+
+            // Start the application
+            initialize();
+        });
+    </script>
+</body>
+</html>

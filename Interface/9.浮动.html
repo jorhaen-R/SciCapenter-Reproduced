@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>浮动 </title>
+
+  <style>
+    .father {
+      width: 400px;
+      height: 200px;
+      border: 2px solid black;
+      background-color: lightgray;
+      overflow: hidden; /* 清除浮动影响 */
+    }
+    .left-son {
+      width: 150px;
+      height: 150px;
+      background-color: lightblue;
+      float: left; /* 左浮动 */
+    }
+    .right-son {
+      width: 150px;
+      height: 150px;
+      background-color: lightcoral;
+      float: right; /* 右浮动 */
+    }
+  </style>
+</head>
+<body>
+  <div class="father">
+    <div class="left-son">这是一个左浮动</div>
+    <div class="right-son">这是一个右浮动</div>
+  </div>
+</body>
+</html>

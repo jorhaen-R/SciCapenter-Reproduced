@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>定位</title>
+  <style>
+    .box1 {
+      width: 600px;
+      height: 200px;
+      border: 2px solid black;
+      background-color: lightgray;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .box-normal {
+      width: 100px;
+      height: 100px;
+      background-color: lightblue;
+    }
+    .box-relative {
+      width: 100px;
+      height: 100px;
+      background-color: lightcoral;
+      position: relative;
+      top: 20px; /* 向下移动20px */
+      left: 20px; /* 向右移动20px */
+    }
+    .box2 {
+      width: 600px;
+      height: 200px;
+      border: 2px solid black;
+      background-color: lightgray;
+      position: relative; /* 设置父元素为相对定位 */
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .box-absolute {
+      width: 100px;
+      height: 100px;
+      background-color: lightgreen;
+      position: absolute;
+      top: 50px; /* 相对于父元素顶部50px */
+      left: 250px; /* 相对于父元素左侧250px */
+    }
+    .box-fixed {
+      width: 100px;
+      height: 100px;
+      background-color: lightpink;
+      position: fixed;
+      bottom: 20px; /* 距离视口底部20px */
+      right: 20px; /* 距离视口右侧20px */
+    }
+  </style>
+</head>
+<body>
+  <h1>相对定位</h1>
+  <div class="box1">
+    <div class="box-normal"></div>
+    <div class="box-relative"></div>
+    <div class="box-normal"></div>
+  </div>
+
+  <h1>这是一个绝对定位</h1>
+  <div class="box2">
+    <div class="box-normal"></div>
+    <div class="box-absolute"></div>
+    <div class="box-normal"></div>
+
+  <h1>这是一个固定定位</h1>
+  <div class="box-fixed"></div>
+</body>
+</html>
