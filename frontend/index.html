@@ -3,537 +3,494 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SciCapenter Mock Interface</title>
+  <title>SciCapenter Reproduction</title>
   <style>
     :root {
-      --bg: #f5f7fb;
-      --panel-bg: #ffffff;
-      --border: #d8deeb;
-      --text: #2c3a4b;
-      --accent: #4b7bec;
-      --accent-light: rgba(75, 123, 236, 0.1);
-      --success: #2ecc71;
-      --warning: #f39c12;
-      --danger: #e74c3c;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --primary-blue: #2563eb;
+      --primary-soft: rgba(37, 99, 235, 0.08);
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --border-gray: #f1f5f9;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --success: #0ea75a;
+      --alert: #e11d48;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+      font-family: "Inter", -apple-system, "Segoe UI", "Roboto", sans-serif;
+      letter-spacing: -0.01em;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.5;
-    }
-
-    h1, h2, h3, h4 {
-      margin: 0;
-    }
-
-    .page {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-      padding: 24px;
-      gap: 16px;
+      overflow-y: auto;
     }
 
-    .panel {
-      background: var(--panel-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+    header {
       padding: 16px 20px;
-      box-shadow: 0 6px 18px rgba(44, 58, 75, 0.05);
-    }
-
-    /* PDF Upload Panel */
-    .upload-panel {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border-gray);
+      box-shadow: var(--shadow);
       display: flex;
       align-items: center;
       justify-content: space-between;
+    }
+
+    header .title {
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.01em;
+    }
+
+    header .links {
+      display: flex;
       gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .upload-drop {
-      flex: 1;
-      min-width: 240px;
-      border: 2px dashed var(--border);
-      border-radius: 10px;
-      padding: 18px;
-      text-align: center;
-      background: var(--accent-light);
-      color: var(--accent);
-      cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .upload-drop:hover {
-      background: rgba(75, 123, 236, 0.16);
-      border-color: var(--accent);
-    }
-
-    /* Main layout */
-    .main-area {
-      display: grid;
-      grid-template-columns: 260px minmax(0,1.2fr) minmax(360px,1.8fr);
-      gap: 16px;
-      align-items: flex-start;
-      flex: 1;
-      min-height: 0;
-    }
-
-    .left-column,
-    .center-column,
-    .right-column {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    /* Figure nav */
-    .figure-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 260px;
-      overflow-y: auto;
-      padding-bottom: 4px;
-    }
-
-    .figure-nav button {
-      min-width: 110px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--panel-bg);
-      color: var(--text);
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    }
-
-    .figure-nav button.active {
-      border-color: var(--accent);
-      box-shadow: 0 6px 16px rgba(75, 123, 236, 0.2);
-      transform: translateY(-2px);
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .figure-box {
-      flex: 1;
-      display: flex;
       align-items: center;
-      justify-content: center;
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      background: #fdfefe;
-      font-size: 1.1rem;
       font-weight: 600;
-      text-align: center;
-      padding: 24px;
+      color: var(--primary-blue);
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 20% 50% 30%;
+      gap: 16px;
+      padding: 16px 20px 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border-gray);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .section-title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-      letter-spacing: 0.02em;
+      font-size: 0.9rem;
+      font-weight: 700;
       text-transform: uppercase;
-      color: #5f6f82;
+      letter-spacing: 0.06em;
+      color: #334155;
+      text-align: center;
+      margin: 0;
     }
 
-    .paragraphs {
+    /* Left column (nav) */
+    #figureNavList {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      max-height: 260px;
+      gap: 10px;
+      overflow-y: auto;
+      max-height: 80vh;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-blue) transparent;
+    }
+    #figureNavList::-webkit-scrollbar { width: 8px; }
+    #figureNavList::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
+
+    .thumb-card {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--border-gray);
+      border-radius: 10px;
+      background: linear-gradient(120deg, #f8fafc, #eef2ff);
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .thumb-card.active {
+      border-color: var(--primary-blue);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+      transform: translateY(-1px);
+    }
+    .thumb-card img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border-gray);
+      background: #e5e7eb;
+    }
+    .thumb-title { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    .thumb-sub { color: var(--muted); font-size: 0.85rem; }
+
+    /* Middle column */
+    .upload-zone {
+      border: 2px dashed var(--border-gray);
+      border-radius: var(--radius);
+      padding: 14px;
+      text-align: center;
+      background: var(--primary-soft);
+      color: var(--primary-blue);
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .upload-zone:hover { border-color: var(--primary-blue); background: rgba(37, 99, 235, 0.16); }
+
+    #figureBox {
+      flex: 1;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #eef2ff, #f8fafc);
+      border: 1px dashed var(--border-gray);
+      border-radius: var(--radius);
+      padding: 12px;
+      max-height: 35vh;
+    }
+    #mainImage {
+      width: 100%;
+      height: 100%;
+      max-height: 35vh;
+      object-fit: contain;
+      border-radius: 10px;
+      border: 1px solid var(--border-gray);
+      box-shadow: var(--shadow);
+      display: none;
+    }
+    #figureTitle {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+    }
+
+    /* Compact caption under image */
+    .caption-under-image {
+      background: #f8fafc;
+      border: 1px solid var(--border-gray);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text);
+      width: 100%;
+    }
+
+    /* Paragraphs */
+    #mentionParagraphs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 180px;
       overflow-y: auto;
       padding-right: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-blue) transparent;
     }
+    #mentionParagraphs::-webkit-scrollbar { width: 8px; }
+    #mentionParagraphs::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
 
-    .paragraphs p {
-      margin: 0;
-      padding: 10px;
-      border-radius: 8px;
-      background: #f5f7fb;
-      border: 1px solid var(--border);
-      font-size: 0.9rem;
-    }
-
-    .caption-editor textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 12px;
+    .caption-box, .paragraphs-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-gray);
       border-radius: 10px;
-      border: 1px solid var(--border);
-      resize: vertical;
+      padding: 12px;
       font-size: 0.95rem;
-      line-height: 1.4;
+      line-height: 1.5;
+      color: var(--text);
     }
 
-    .rating-stars {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.3rem;
+    /* Clean Paragraph Card Style */
+    .paragraphs-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 16px 12px 24px; /* Left padding for bullet */
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #334155;
+      position: relative; /* For absolute positioning of bullet */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
     }
 
-    .stars {
-      color: var(--accent);
-      letter-spacing: 2px;
+    .paragraphs-box:hover {
+      transform: translateX(2px);
+      border-color: var(--primary-blue);
     }
 
+    /* The Bullet Point */
+    .paragraphs-box::before {
+      content: "•";
+      color: var(--primary-blue);
+      font-weight: bold;
+      font-size: 1.2rem;
+      position: absolute;
+      left: 10px;
+      top: 8px; /* Adjust alignment */
+    }
+
+    /* Right column cards */
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      border-radius: 10px;
+      border: 1px solid var(--border-gray);
+      padding: 12px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      background: #f8fafc;
+      resize: vertical;
+    }
+
+    .stars { color: var(--primary-blue); letter-spacing: 4px; font-size: 1.2rem; }
+    .rating-wrap { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    
+/* --- E区 Checklist 完美对齐样式 --- */
+    
     .checklist {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
     .check-item {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      align-items: flex-start; /* Icon stays at the top even if text wraps */
       padding: 8px 10px;
+      border: 1px solid var(--border-gray);
       border-radius: 8px;
-      border: 1px solid var(--border);
-      background: #fafbff;
+      background: #f8fafc;
       font-size: 0.9rem;
+      line-height: 1.5;
+      gap: 12px; /* Fixed gap */
     }
-
-    .status-indicator {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .status-true {
-      background: var(--success);
-    }
-
-    .status-false {
-      background: var(--danger);
-    }
-
-    .ai-caption {
+    
+    /* 强制图标容器不缩放 */
+    .check-item > span:first-child {
+      flex: 0 0 20px; /* Fixed width 20px, no grow, no shrink */
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #f8f9ff;
-      font-size: 0.9rem;
+      justify-content: center;
+      margin-top: 2px; /* Optical alignment with text cap-height */
+    }
+    
+    /* 文字容器自适应 */
+    .check-item > span:last-child {
+      flex: 1;
+      word-break: break-word; /* Prevent overflow */
     }
 
-    @media (max-width: 1080px) {
-      .main-area {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    /* 高亮样式 (保持不变) */
+    .highlight {
+        background-color: #fef08a;
+        font-weight: 700;
+        padding: 0 4px;
+        border-radius: 2px;
+        color: #0f172a;
+    }
+
+    /* AI captions stars */
+    .ai-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      flex-wrap: wrap;
+    }
+    .ai-stars {
+      font-size: 0.9rem;
+      color: var(--primary-blue);
+      letter-spacing: 2px;
+      white-space: nowrap;
+    }
+
+    .hidden-input { display: none; }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--primary-blue);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      letter-spacing: -0.01em;
+    }
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      letter-spacing: -0.01em;
+    }
+
+    @media (max-width: 1200px) {
+      main { grid-template-columns: 1fr; height: auto; overflow: auto; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
-    <!-- Upload -->
-    <div class="panel upload-panel" id="uploadPanel">
-      <div>
-        <h2>PDF Upload Panel (A)</h2>
-        <p>Drag a PDF here or use the file input to simulate upload.</p>
-      </div>
-      <label class="upload-drop" for="pdfInput">
-        <strong>Click to Select PDF</strong>
-        <input id="pdfInput" type="file" accept="application/pdf" style="display:none" />
-      </label>
+  <header>
+    <div class="title">SciCapenter Reproduction</div>
+    <div class="links">
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+      <span style="color: var(--muted);">/</span>
+      <a href="#about">About</a>
+      <button onclick="clearState()" class="btn-secondary" style="background:transparent;border:none;color:#dc2626;cursor:pointer;">Clear Session</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left Column (Navigation - B) -->
+    <div class="panel" style="overflow:hidden;">
+      <p class="section-title" style="margin-bottom:4px;">FIGURE LIST</p>
+      <div id="figureNavList" aria-label="Figure Navigation Bar"></div>
     </div>
 
-    <!-- Main three-column area -->
-    <div class="main-area">
-      <!-- 左列：Figure 列表 (B) + 段落 (I) -->
-      <div class="left-column">
-        <div class="panel">
-          <div class="section-title">Figures (B)</div>
-          <div class="figure-nav" id="figureNav" aria-label="Figure Navigation Bar (B)"></div>
-        </div>
-
-        <div class="panel">
-          <div class="section-title">Figure-mentioning Paragraphs (I)</div>
-          <div class="paragraphs" id="paragraphList"></div>
-        </div>
+    <!-- Middle Column -->
+    <div style="display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden;">
+      <!-- (A) Upload Panel -->
+      <div class="panel" id="uploadPanel" style="padding:0;flex:0 0 auto;">
+        <label class="upload-zone" for="pdfInput">
+          <div style="font-weight:700;">Click or Drop to Upload PDF</div>
+          <div style="color:var(--muted);font-size:0.95rem;margin-top:4px;">Backend: http://127.0.0.1:8000</div>
+          <input id="pdfInput" type="file" accept="application/pdf" class="hidden-input" />
+        </label>
       </div>
 
-      <!-- 中列：Figure 预览 (C) + 原 caption -->
-      <div class="center-column">
-        <div class="panel figure-box" id="figureBox">
-          Upload a PDF or select a figure.
+      <!-- (C) Figure Image + Original Caption compact -->
+      <div class="panel" style="flex:1;min-height:0;gap:8px;">
+        <p class="section-title" style="margin-bottom:4px;">Figure (C)</p>
+        <div id="figureBox">
+          <h2 id="figureTitle">Upload a PDF or select a figure.</h2>
+          <img id="mainImage" alt="Selected figure" />
         </div>
-        <div class="panel">
-          <div class="section-title">Original Caption</div>
-          <p id="originalCaption">Select a figure to view details.</p>
-        </div>
+        <div class="caption-under-image" id="originalCaptionText">Select a figure to view details.</div>
       </div>
 
-      <!-- 右列：Caption 相关 (D–H) -->
-      <div class="right-column">
-        <div class="panel caption-editor">
-          <div class="section-title">Caption Editor (D)</div>
-          <textarea id="captionEditor" placeholder="Edit the caption here..."></textarea>
-        </div>
+      <!-- (I) Figure-Mentioning Paragraphs -->
+      <div class="panel" style="flex:1;min-height:0;overflow:auto;">
+        <p class="section-title">Figure-mentioning Paragraphs (I)</p>
+        <div id="mentionParagraphs" style="flex:1;min-height:0;"></div>
+      </div>
+    </div>
 
-        <div class="panel">
-          <div class="section-title">Caption Rating (F)</div>
-          <div class="rating-stars">
-            <span id="starDisplay" class="stars">☆☆☆☆☆</span>
-            <span id="numericRating">0 / 5</span>
+    <!-- Right Column (Tools) -->
+    <div style="display:flex;flex-direction:column;gap:20px;min-height:0;overflow:hidden;">
+      <!-- (D) Caption Editor -->
+      <div class="panel" style="min-height:0;overflow:auto;">
+        <p class="section-title">Caption Editor (D)</p>
+        <textarea id="captionEditor" placeholder="Craft or refine your caption here..."></textarea>
+      </div>
+
+      <!-- (E) Caption Analysis -->
+      <div class="panel" style="min-height:0;overflow:auto;">
+        <p class="section-title">Caption Analysis (E)</p>
+        <div class="checklist-sentences" id="checklist"></div>
+      </div>
+
+      <!-- (G) Explanation -->
+      <div class="panel" style="min-height:0;overflow:auto;">
+        <p class="section-title">Explanation (G)</p>
+        <div class="ai-caption" id="explanationBox">Select a figure to view the explanation.</div>
+      </div>
+
+      <!-- (F) Caption Rating -->
+      <div class="panel" style="min-height:0;overflow:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <p class="section-title">Caption Rating (F)</p>
+          <button id="btnRate" class="btn-primary">Rate Now</button>
+        </div>
+        <div class="rating-wrap">
+          <span id="starDisplay" class="stars">☆☆☆☆☆</span>
+          <span id="numericRating">0 / 5</span>
+        </div>
+        <p id="ratingExplanation" style="margin:0;color:var(--muted);"></p>
+      </div>
+
+      <!-- (H) Machine-Generated Captions -->
+      <div class="panel" style="min-height:0;overflow:auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <p class="section-title">Machine-Generated Captions (H)</p>
+          <button id="btnGenerate" class="btn-primary">Generate</button>
+        </div>
+        <div class="ai-caption" id="shortCaption">
+          <div class="ai-line">
+            <strong>Short:</strong>
+            <span>Short caption not generated yet.</span>
+            <span class="ai-stars">☆☆☆☆☆</span>
+            <button class="copy-btn btn-secondary" data-type="short" style="padding:2px 8px;">Copy</button>
           </div>
-          <p id="ratingExplanation" style="margin-top: 8px; font-size: 0.9rem; color: #5f6f82;">
-            Rating explanation will appear here.
-          </p>
         </div>
-
-        <div class="panel">
-          <div class="section-title">Caption Analysis (Check Table) (E)</div>
-          <div class="checklist" id="checklist"></div>
-        </div>
-
-        <div class="panel">
-          <div class="section-title">Explanation for the Rating (G)</div>
-          <p id="longExplanation" style="margin:0; font-size:0.9rem; color:#334">
-            Select a figure to view the detailed explanation.
-          </p>
-        </div>
-
-        <div class="panel">
-          <div class="section-title">Machine-generated Captions &amp; Ratings (H)</div>
-          <div class="ai-caption" id="shortCaption">
-            Short caption not generated yet.
-          </div>
-          <div class="ai-caption" id="longCaption">
-            Long caption not generated yet.
+        <div class="ai-caption" id="longCaption">
+          <div class="ai-line">
+            <strong>Long:</strong>
+            <span>Long caption not generated yet.</span>
+            <span class="ai-stars">☆☆☆☆☆</span>
+            <button class="copy-btn btn-secondary" data-type="long" style="padding:2px 8px;">Copy</button>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <script>
-    /******************** 1. 后端 sample 数据（原样保留） ********************/
-    const backendSample = {
-      "results": [
-        {
-          "figure_id": "Table 1",
-          "fig_type": "Table",
-          "page": 5,
-          "caption": "Table 1: We leverage the NASA Task Load Index method to assess workload on five-point scales, under conditions of free",
-          "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Table1-1.png",
-          "image_text": [
-            "Mental","Demand","2.93","[2.40,","3.47]","2.53","[1.91,","3.16]","0.233",
-            "3.80","[3.32,","4.28]","2.53","[1.91,","3.16]","<0.001***","Physical","Demand",
-            "1.87","[1.40,","2.33]","1.93","[1.40,","2.47]","0.774","2.20","[1.68,","2.72]",
-            "1.87","[1.40,","2.33]","0.019","Temporal","Demand","1.87","[1.36,","2.37]",
-            "1.53","[1.18,","1.89]","0.096","3.20","[2.53,","3.87]","2.40","[1.74,",
-            "3.06]","0.005**","Performance","2.47","[1.88,","3.05]","2.47","[1.75,",
-            "3.19]","1.000","2.73","[2.12,","3.34]","2.13","[1.48,","2.79]","0.095",
-            "Effort","2.87","[2.36,","3.37]","2.40","[1.90,","2.90]","0.150","2.93",
-            "[2.40,","3.47]","2.33","[1.84,","2.83]","0.057","Frustration","2.33","[1.62,",
-            "3.05]","1.40","[1.12,","1.68]","0.008**","2.73","[2.06,","3.41]","1.67",
-            "[1.21,","2.12]","0.001**","Overall","2.39","[2.05,","2.73]","2.04","[1.71,",
-            "2.38]","0.046*","2.93","[2.52,","3.34]","2.16","[1.74,","2.57]","<0.001***",
-            "Avg.","95%","CI","Avg.","95%","CI","Avg.","95%","CI","Avg.","95%","CI",
-            "p-value","User","Only","With","System","p-value","User","Only","With",
-            "System","Free","Writing","Time-Constrained","Writing"
-          ],
-          "paragraphs": [
-            {
-              "page": 5,
-              "text": "SciCapenter significantly reduced cognitive loads in caption writ- ing for participants, particularly under time constraints. In the main study, there were a total of 15 participants. We computed the NASA- Task Load Index for each condition, employing a five-point scale ranging from Very Low to Very High and from Perfect to Failure. The results are shown in Table 1, demonstrating that SciCapenter significantly reduced cognitive load for users. With the assistance of SciCapenter, users experienced reduced effort, frustration, and mental demand when composing captions. This effect was more pronounced under time constraints, with the overall NASA Task Index (Table 1) dropping from 2.93 to 2.16, compared to a smaller reduction from 2.39 to 2.04 in free writing. Additionally, the de- crease in frustration was the most significant, with the workload falling from 2.33 to 1.40 in free writing, and from 2.73 to 1.67 in time-limited scenarios.",
-              "bbox": { "x1": 53.09, "y1": 299.64, "x2": 295.56, "y2": 463.64 }
-            },
-            {
-              "page": 6,
-              "text": "Table 1: We leverage the NASA Task Load Index method to assess workload on five-point scales, under conditions of free writing and time-constrained writing, both with and without SciCapenter. A lower score indicates a lower perceived workload. The p-values are obtained by comparing the user-only and with-system settings (paired t-test, two tailed, N=15). The 95% confidence intervals are estimated using t-distribution. With SciCapenter, users had less workload in both free writing and time-constrained writing scenarios, with the most notable improvements seen in the Mental Demand and Frustration.",
-              "bbox": { "x1": 53.45, "y1": 214.40, "x2": 559.73, "y2": 267.30 }
-            }
-          ]
-        },
-        {
-          "figure_id": "Figure 3",
-          "fig_type": "Figure",
-          "page": 5,
-          "caption": "Figure 3: Comparison between six different elements provided by SciCapenter. Left figure shows the mean rating and standard",
-          "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Figure3-1.png",
-          "image_text": [],
-          "paragraphs": [
-            {
-              "page": 1,
-              "text": "Captions for scientific figures, such as charts, bar charts, and pie charts, are crucial to readers. Readers comprehend and recall the un- derlying information significantly better when reading charts with captions, as compared with reading charts alone [2, 13, 30, 40]. Un- fortunately, authors do not pay needed attention to crafting figure captions in their papers. A recent study showed that over half of the figure captions in arXiv papers were rated as not helpful by Ph.D. students [19]. Meanwhile, with advances in deep learning, com- putational models now have a rich set of capabilities surrounding scientific figures: generating captions of decent quality [24, 37, 49], analyzing the information in figure images [6, 26, 35], and evaluat- ing the usefulness of figure captions [18]. However, literature has little to say about how these technologies could be used to help academics who write figure captions for their papers. The user stud- ies of these technologies were almost all conducted from a reader perspective, i.e., having participants read the machine-generated outputs and judge their quality [19, 51, 52]. The user needs of writ- ers and readers are known to be different [3, 8, 14, 44]; a piece of machine-generated text might be of lower readability but could serve as a useful draft for writers to work off of [9, 10, 28]. A few prior works, such as Intentable [5], InkSight [33], and AutoTitle [34], built systems that generate captions considering writers’ intentions and allow authors to refine visualization captions and titles, but they did not focus on composing figure captions for scholarly articles. This paper introduces SciCapenter, a system that puts together a set of cutting-edge AI technologies surrounding scientific figures to help users write figure captions in scholarly articles (Figure 1). Users first upload the PDF file of their working draft to SciCapen- ter, which will automatically extract all the figures and their cur- rent captions. Users can then browse and pinpoint figures they wish to modify. Upon selecting a figure, SciCapenter displays the figure image, its current caption, paragraphs in the article referencing the exact figure (e.g., “Figure 3 demonstrates...”), and a series of AI-generated insights. Specifically:",
-              "bbox": { "x1": 317.64, "y1": 319.15, "x2": 559.72, "y2": 689.76 }
-            },
-            {
-              "page": 5,
-              "text": "Machine-generated ratings and labels were deemed more useful than machine-generated captions. We asked participants to rate the overall SciCapenter in terms of the following three questions on a five-point Likert scale: (i) How difficult is it to use the system? (Rating scale: Very Easy to Very Difficult), (ii) How useful is the system in assisting with caption writing? (Overall) (Rating scale: Very Bad to Very Good), and (iii) How fast is the system response? (Rating scale: Very Slow to Very Fast). Six more questions about the satisfaction level (a five-point Likert scale from Very Bad to Very Good) toward the six components (i.e., check table, caption rating, explanation for the rating, long caption, short caption, and referred paragraph) were also asked. Figure 3 shows the results. Overall, participants expressed high satisfaction with our sys- tem’s usability (average rating = 3.80, SD = 0.86, n = 15) and its ease of use (average rating = 1.80, SD = 0.68, n = 15). The response time got an average rating of 3.40 and was not considered too slow. We also discovered that, within SciCapenter, participants found machine-generated ratings and predictions more useful than machine-generated captions. Even extracted paragraphs that men- tioned the figure were deemed more helpful. Both long and short captions had the lowest average preference rating. Analyzing the",
-              "bbox": { "x1": 53.50, "y1": 479.21, "x2": 295.56, "y2": 709.14 }
-            },
-            {
-              "page": 6,
-              "text": "Figure 3: Comparison between six different elements provided by SciCapenter. Left figure shows the mean rating and standard deviation of a five-point scale for different elements. The check table and referred paragraph were rated highest, while short and long caption had the lowest score, indicating they were the least favored elements according to the participants. Right figure shows a breakdown of the five-point scale with different colors representing each rating. The short caption exhibit a more varied distribution of opinions.",
-              "bbox": { "x1": 53.80, "y1": 412.40, "x2": 558.20, "y2": 465.11 }
-            },
-            {
-              "page": 6,
-              "text": "• Present contextual or analytical information relevant to the writing task. While machine-generated captions were generally deemed useful, our results suggested that the benefits of presenting contextual (e.g., figure-mentioning paragraphs) or analytical (e.g., check tables, ratings) infor- mation relevant to the writing task might be more prevalent (Figure 3). • Provide concrete, actionable suggestions for writing. SciCapenter analyzed the current situation without offer- ing specific guidance on enhancing a caption or providing fillable caption templates, leading to many participant com- plaints (Section 5). Future developers of writing assistants for caption writing should aim to provide more targeted, ac- tionable suggestions. Continued research and development are crucial for this.",
-              "bbox": { "x1": 333.92, "y1": 503.08, "x2": 559.74, "y2": 667.13 }
-            }
-          ]
-        },
-        {
-          "figure_id": "Figure 2",
-          "fig_type": "Figure",
-          "page": 4,
-          "caption": "Figure 2: Before the study, participants provided ten papers from their research domain, either intended for reading or briefly",
-          "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Figure2-1.png",
-          "image_text": [],
-          "paragraphs": [
-            {
-              "page": 4,
-              "text": "Pre-Study Preparation. We asked each participant to provide ten scientific papers from their research domain that they intended to read or had briefly skimmed but had not read in-depth. This approach ensured participants had some contextual understanding of the article but were not biased by the original captions. After receiving these articles, we processed them through SciCapenter, selecting six figures with the lowest quality score rated by Sci- Capenter. We then manually redacted the captions from these selected papers using Adobe Acrobat Pro (Figure 2). All these ma- terials were prepared before the user study. We tried our best to select only one figure per article. However, pdfparser2 failed to parse papers from some specific domains much more frequently, so this was not always feasible. In cases where two figures were selected from the same paper for a participant, they received a PDF where both captions were redacted.",
-              "bbox": { "x1": 53.47, "y1": 470.90, "x2": 295.56, "y2": 634.92 }
-            },
-            {
-              "page": 5,
-              "text": "Figure 2: Before the study, participants provided ten papers from their research domain, either intended for reading or briefly skimmed but not read in-depth. We processed these papers through SciCapenter, choosing six target figures and manually redacting their captions. Participants received the redacted PDFs in the user study and were asked to write captions for the figures.",
-              "bbox": { "x1": 53.80, "y1": 188.79, "x2": 558.45, "y2": 230.59 }
-            }
-          ]
-        },
-        {
-          "figure_id": "Figure 1",
-          "fig_type": "Figure",
-          "page": 1,
-          "caption": "Figure 1: Overview of SciCapenter system interface. PDF Upload Panel (A): A drag-and-drop interface for uploading PDF files.",
-          "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Figure1-1.png",
-          "image_text": [],
-          "paragraphs": [
-            {
-              "page": 1,
-              "text": "Captions for scientific figures, such as charts, bar charts, and pie charts, are crucial to readers. Readers comprehend and recall the un- derlying information significantly better when reading charts with captions, as compared with reading charts alone [2, 13, 30, 40]. Un- fortunately, authors do not pay needed attention to crafting figure captions in their papers. A recent study showed that over half of the figure captions in arXiv papers were rated as not helpful by Ph.D. students [19]. Meanwhile, with advances in deep learning, com- putational models now have a rich set of capabilities surrounding scientific figures: generating captions of decent quality [24, 37, 49], analyzing the information in figure images [6, 26, 35], and evaluat- ing the usefulness of figure captions [18]. However, literature has little to say about how these technologies could be used to help academics who write figure captions for their papers. The user stud- ies of these technologies were almost all conducted from a reader perspective, i.e., having participants read the machine-generated outputs and judge their quality [19, 51, 52]. The user needs of writ- ers and readers are known to be different [3, 8, 14, 44]; a piece of machine-generated text might be of lower readability but could serve as a useful draft for writers to work off of [9, 10, 28]. A few prior works, such as Intentable [5], InkSight [33], and AutoTitle [34], built systems that generate captions considering writers’ intentions and allow authors to refine visualization captions and titles, but they did not focus on composing figure captions for scholarly articles. This paper introduces SciCapenter, a system that puts together a set of cutting-edge AI technologies surrounding scientific figures to help users write figure captions in scholarly articles (Figure 1). Users first upload the PDF file of their working draft to SciCapen- ter, which will automatically extract all the figures and their cur- rent captions. Users can then browse and pinpoint figures they wish to modify. Upon selecting a figure, SciCapenter displays the figure image, its current caption, paragraphs in the article referencing the exact figure (e.g., “Figure 3 demonstrates...”), and a series of AI-generated insights. Specifically:",
-              "bbox": { "x1": 317.64, "y1": 319.15, "x2": 559.72, "y2": 689.76 }
-            },
-            {
-              "page": 2,
-              "text": "Figure 1: Overview of SciCapenter system interface. PDF Upload Panel (A): A drag-and-drop interface for uploading PDF files. Navigation Bar (B): A horizontal bar showing a list of figures extracted from the uploaded document. Figure Image (C): The main area displaying the image of the selected figure. Caption Editor (D): A text box for editing the caption of the selected figure. Caption Rating (F): A feedback system that allows GPT to rate the quality of the caption, represented by a star rating. Caption Analysis (Check Table) (E): Icons indicating the presence or absence of key elements in the caption, such as helpfulness or takeaway message. Explanation for the Rating (G): A textual explanation providing insight into why a particular star rating was given to the caption. Machine-generated Captions & Their Ratings (H): This section includes long and short captions generated by AI models, each accompanied by their respective star ratings. Figure-mentioning Paragraphs (I): Paragraphs in the document that mention the target figure, providing context or additional information.",
-              "bbox": { "x1": 53.45, "y1": 492.08, "x2": 559.74, "y2": 588.63 }
-            },
-            {
-              "page": 2,
-              "text": "• SciCapenter offers two machine-generated captions (Fig- ure 1.H): one long, another short, using a cutting-edge AI model. We decided to provide captions with two different lengths to address the dual needs of caption writers: longer captions are more informative for readers [19], while shorter captions help authors meet space constraints in papers. • SciCapenter provides a checklist (Figure 1.E), predicted by an AI model, detailing essential caption features (e.g., does the caption highlight the central message? Does it reference figure text?).",
-              "bbox": { "x1": 69.76, "y1": 595.99, "x2": 295.56, "y2": 705.20 }
-            },
-            {
-              "page": 2,
-              "text": "• SciCapenter rates all captions (Figure 1.F), including the author’s original and all AI-generated ones, and also shows the rationale behind each rating (Figure 1.G). Users can modify captions directly in SciCapenter (Figure 1.D), sub- mit them for updated ratings, and refine them iteratively.",
-              "bbox": { "x1": 333.92, "y1": 595.82, "x2": 559.72, "y2": 650.40 }
-            },
-            {
-              "page": 3,
-              "text": "SciCapenter is a comprehensive system that includes a web inter- face and a caption editing function. Figure 1 shows a screenshot of the entire system. To begin using SciCapenter, users start by uploading their PDF file in the PDF upload panel (Figure 1.A). Once the PDF file is processed, the extracted figures are displayed on the navigation bar (Figure 1.B). Users can click on a figure to access the detailed information. Upon clicking, the selected figure (Fig- ure 1.C), along with complete information, appears on the right side of the window. On the right side of the window, users have access to several features that assist them in composing captions, including a checking table (Figure 1.E), GPT evaluation and expla- nation (Figure 1.F and 1.G), generated captions - long/short versions (Figure 1.H), and (4) referred paragraphs (Figure 1.I). Users are able to edit the caption in the caption editor (Figure 1.D) and resubmit it for re-evaluation. In the backend, once a user submits a pdf file, SciCapenter will store the file in our MongoDB and extract figures, captions, abstracts, and contents using pdffigure2 [7].1 The extracted figure list will then be presented in the navigation bar (Figure 1.B). Regular expressions are then used to identify the corresponding referred paragraphs (Figure 1.I) based on the figure index, similar to how Huang et al. extracted figure-mentioning paragraphs [19]. The check table (Figure 1.E) detects whether the written caption describes or expresses the following six aspects [18]:",
-              "bbox": { "x1": 317.62, "y1": 155.37, "x2": 559.72, "y2": 416.39 }
-            },
-            {
-              "page": 3,
-              "text": "Missed aspects would be highlighted as a warning for users. The aspect detection model is a SciBert [1] model fine-tuned on 3,159 human annotations, which achieved an F1 score of 0.64 [18]. The caption rating and its explanation (Figure 1.F and Figure 1.G) are",
-              "bbox": { "x1": 317.95, "y1": 621.70, "x2": 558.20, "y2": 663.54 }
-            },
-            {
-              "page": 4,
-              "text": "obtained by calling OpenAI’s GPT-3.5-turbo API [42] with the prompt shown in Appendix A in a zero-shot manner. The machine- generated captions (Figure 1.H) are generated with the model pro- posed by Huang et al. [19]. Specifically, we obtained their Pegasus𝑃+𝑂 and Pegasus𝑃+𝑂+𝐵model, figure captioning models that generate captions by summarising the figure-mentioning paragraphs. The Pegasus𝑃+𝑂+𝐵model is trained with captions longer than 30 words so it naturally generates longer captions. In SciCapenter, we use the default decoding strategy (beam search with the number of beams = 5) for text generation.",
-              "bbox": { "x1": 53.80, "y1": 86.48, "x2": 297.62, "y2": 194.07 }
-            },
-            {
-              "page": 9,
-              "text": "The following is the prompt used by SciCapenter to generate the caption rating and its explanation (Figure 1.F and Figure 1.G):",
-              "bbox": { "x1": 53.53, "y1": 253.24, "x2": 294.05, "y2": 273.17 }
-            },
-            {
-              "page": 9,
-              "text": "• In the pilot study, the task sequence was ordered 2 -> 4 -> 1 -> 3, with the SciCapenter conditions proceeding first. We ob- served that after participants viewed the six aspects reported in the check table (Figure 1.E), their writings were influenced, for example, to include takeaway messages and figures’ vi- sual features. To minimize this influence, we changed the task order by asking participants to proceed with the condi- tions without SciCapenter first in the formal study. We also included extra instructions clarifying that the six aspects are suggestions, not requirements. • In the pilot study, the rating’s explanation (Figure 1.G) was only visible when users hovered over a small button. We found that participants frequently ignored this explanation. As a result, we modified the interface to display the explana- tion directly. • The missing aspects in the check table (Figure 1.E) were originally tagged with the icon “X”. Users expressed concerns about such a strong rejection symbol. We, therefore, replaced it with a triangle alert symbol.",
-              "bbox": { "x1": 69.76, "y1": 502.71, "x2": 295.56, "y2": 709.14 }
-            },
-            {
-              "page": 9,
-              "text": "• The time constraint for Condition 3 and Condition 4 in the pilot study was set to five minutes. We found that partici- pants were quite stressed and could barely finish the caption. So, we extended the time limit to 8 minutes. • GPT-4 was used for automatic caption evaluation (Figure 1.F and Figure 1.G) in the pilot study. However, the API’s re- sponse time was quite high. Thus, we changed to GPT-3.5- turbo in the main study.",
-              "bbox": { "x1": 333.92, "y1": 86.27, "x2": 559.72, "y2": 172.15 }
-            }
-          ]
-        },
-        {
-          "figure_id": "Figure 4",
-          "fig_type": "Figure",
-          "page": 6,
-          "caption": "Figure 4: Comparative evaluation of caption quality by three experts, where each caption type—Ground Truth, Summary Short,",
-          "image_path": "D:\\pdffigures2_output\\sci\\images\\figsci-Figure4-1.png",
-          "image_text": [],
-          "paragraphs": [
-            {
-              "page": 7,
-              "text": "Figure 4: Comparative evaluation of caption quality by three experts, where each caption type—Ground Truth, Summary Short, Summary Long, and GPT-4V—is rated on a scale from rank 1 (highest) to rank 4 (lowest). Both Expert 1 and Expert 2 rated Ground Truth caption as rank 1 most frequently, while Expert 3 had a preference for Summary Short. Notably, Expert 3 rated GPT-4V the lowest, rarely giving it a rank 1, whereas both Expert 1 and Expert 2 often considered GPT-4V as their second choice for rank 1. The variations in evaluations reflect differing perspectives on caption quality and suggest that while Ground Truth captions are generally preferred, there’s a significant disparity in how each expert rates the machine-generated captions.",
-              "bbox": { "x1": 53.50, "y1": 148.96, "x2": 559.29, "y2": 212.63 }
-            },
-            {
-              "page": 7,
-              "text": "GPT-4V produce significantly better captions than the mod- els used in SciCapenter, potentially altering our study’s conclusions? To explore this, we recruited three professional aca- demic paper editors to assess the quality of captions generated by various models. From the SciCap Challenge dataset [17], we randomly selected 200 figure-caption pairs. For each figure, we generated two captions using models from SciCapenter (Summary Short and Summary Long), one caption using GPT-4V by prompting it with the figure image and figure-mentioning paragraphs, and we also included the original author-written caption (Ground Truth). To ensure a fair comparison in our study, GPT-4V was prompted to generate captions no longer than the author-written captions, acknowledg- ing that readers often favor longer captions. This length constraint aimed to minimize the influence of caption length on quality as- sessment. We recruited three professional editors (Expert 1, 2, and 3) through UpWork,5 all specializing in technical academic articles and native American English speakers. Their backgrounds include one with over ten years of editing experience and a Ph.D. in Comparative Literature, and two from the STEM fields—one in Theoretical Astro- physics and another in Neuroscience—with extensive experience in editing, proofreading, and publishing academic papers. They ranked the captions based on their effectiveness in clarifying the figure’s intended message. The results are shown in Figure 4. Under the caption length constraints, GPT-4V did not outperform Sci- Capenter’s models drastically. Although Experts 1 and 2 preferred GPT-4V’s generation over that of SciCapenter’s models, Expert 3 did not favor it.",
-              "bbox": { "x1": 53.48, "y1": 231.87, "x2": 296.99, "y2": 549.38 }
-            }
-          ]
-        }
-      ]
+    /******************** 1) Config & State ********************/
+    const API_BASE_URL = "";
+
+    const AppState = {
+      docId: null,
+      figures: [],
+      currentFigId: null,
+      captions: {},
+      ratings: {},
+      checklists: {},
+      aiCaptions: {},
     };
 
-    /******************** 2. 配置 & 工具函数 ********************/
-    const BACKEND_BASE_URL = "http://127.0.0.1:8000";
+    const checklistSentences = {
+      helpfulness: "This caption mentions the <span class='highlight'>helpfulness</span> message of the figure.",
+      ocr: "This caption mentions the <span class='highlight'>ocr</span> message of the figure.",
+      relation: "This caption describes the <span class='highlight'>relation</span> of the figure.",
+      stats: "This caption mentions the <span class='highlight'>stats</span> of the figure.",
+      takeaway: "This caption mentions the <span class='highlight'>takeaway</span> message of the figure.",
+      visual: "This caption mentions the <span class='highlight'>visual</span> of the figure."
+    };
 
-    // 把 D:\pdffigures2_output\sci\images\xxx.png → http://127.0.0.1:8000/fig_images/sci/images/xxx.png
-    function buildImageUrl(rawPath) {
-  if (!rawPath) return "";
+    function mapBackendFiguresToUI(backendFigures) {
+      if (!Array.isArray(backendFigures)) return [];
 
-  // 1. 去掉盘符，比如 D:\ 或 C:\
-  let p = rawPath.replace(/^[a-zA-Z]:[\\/]/, "");  
-  // 现在是：pdffigures2_output\sci\images\...
-
-  // 2. 再去掉最前面的 pdffigures2_output\ 这一层
-  p = p.replace(/^pdffigures2_output[\\/]/, "");    
-  // 现在是：sci\images\...
-
-  // 3. 全部换成 URL 用的 /
-  p = p.replace(/\\/g, "/");                        
-
-  // 4. 拼成浏览器访问的 URL
-  return `${BACKEND_BASE_URL}/fig_images/${p}`;    
-  // -> http://127.0.0.1:8000/fig_images/sci/images/figsci-Table1-1.png
-}
-
-    function mapBackendResultsToUI(results) {
-      return results.map((item, index) => {
-        let imageLabel = item.caption || "";
-        const colonIndex = imageLabel.indexOf(":");
-        if (colonIndex !== -1 && colonIndex + 1 < imageLabel.length) {
-          imageLabel = imageLabel.slice(colonIndex + 1).trim();
+      return backendFigures.map((fig, index) => {
+        let url = fig.image_path || "";
+        if (url && !url.startsWith("/")) {
+          url = "/" + url;
         }
 
-        const paras = (item.paragraphs || []).map((p) => p.text);
-
         return {
-          id: index + 1,
-          title: item.figure_id || `Figure ${index + 1}`,
-          imageLabel,
-          originalCaption: item.caption || "",
-          page: item.page,
-          imagePath: item.image_path || "",
-          imageUrl: buildImageUrl(item.image_path || ""),
-          paragraphs: paras,
+          id: fig.figure_id,
+          title: fig.title,
+          imageLabel: fig.caption || "",
+          originalCaption: fig.caption,
+          page: fig.page,
+          imagePath: url,
+          imageUrl: API_BASE_URL + url,
+          paragraphs: fig.mention_paragraphs || [],
+          imageText: fig.image_text || "",
           rating: 0,
           ratingExplanation: "Rating not available yet.",
           checklist: {
@@ -556,23 +513,15 @@
       });
     }
 
-    const checklistLabels = {
-      helpfulness: "Helpfulness",
-      ocr: "OCR",
-      relation: "Relation",
-      stats: "Stats",
-      takeaway: "Takeaway",
-      visual: "Visual",
-    };
-
-    let figures = mapBackendResultsToUI(backendSample.results || []);
-
-    const state = {
-      selectedFigure: null,
-      currentCaption: "",
-    };
+    /******************** 2) Helpers ********************/
+    function renderStars(count, max = 5) {
+      const filled = "★".repeat(Math.max(0, Math.min(count, max)));
+      const empty = "☆".repeat(Math.max(0, max - count));
+      return filled + empty;
+    }
 
     function calculateRating(caption) {
+      if (!caption) return { rating: 0, explanation: "No caption provided yet." };
       const length = caption.trim().split(/\s+/).filter(Boolean).length;
       if (length === 0) return { rating: 0, explanation: "No caption provided yet." };
       if (length < 10) return { rating: 2, explanation: "Caption is too short to be informative." };
@@ -582,171 +531,255 @@
     }
 
     async function callRateCaption(caption) {
-      const fallbackRating = () => calculateRating(caption);
+      const fig = AppState.figures.find((f) => f.id === AppState.currentFigId);
+      const context = {
+        original_caption: fig ? fig.originalCaption : "",
+        mention_paragraphs: fig ? fig.paragraphs : [],
+        image_text: fig ? (fig.imageText || "") : "",
+      };
+
       try {
-        const response = await fetch(`${BACKEND_BASE_URL}/rate_caption`, {
+        const resp = await fetch("/rate_caption", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ caption }),
+          body: JSON.stringify({ caption, context }),
         });
-
-        if (!response.ok) {
-          console.error(`rate_caption responded with ${response.status}: ${response.statusText}`);
-          return fallbackRating();
+        
+        if (!resp.ok) {
+          const errText = await resp.text();
+          return { rating: 0, explanation: `[Error] ${errText}`, dimensions: null, checklist: null };
         }
-
-        const data = await response.json();
-        const rating = Number(data.rating);
-        const explanation = typeof data.explanation === "string" ? data.explanation : "";
-
-        if (Number.isFinite(rating) && explanation) {
-          return { rating, explanation };
-        }
-        return fallbackRating();
+        const data = await resp.json();
+        return {
+          rating: data.score || 0,
+          explanation: data.explanation || "No explanation provided.",
+          dimensions: data.dimensions || null,
+          checklist: data.checklist || null,
+        };
       } catch (error) {
-        console.error("Failed to call rate_caption API", error);
-        return fallbackRating();
+        return { rating: 0, explanation: `[Network Error] ${error.message}`, dimensions: null, checklist: null };
       }
     }
 
-    /******************** 3. 渲染函数 ********************/
-    function renderFigureNav() {
-      const nav = document.getElementById("figureNav");
-      nav.innerHTML = "";
-
-      figures.forEach((figure) => {
-        const btn = document.createElement("button");
-        btn.textContent = figure.title;
-        if (state.selectedFigure && state.selectedFigure.id === figure.id) {
-          btn.classList.add("active");
+    async function callGenerateCaptions() {
+      const fig = AppState.figures.find((f) => f.id === AppState.currentFigId);
+      if (!fig) return { short_caption: "", long_caption: "" };
+      const context = {
+        original_caption: fig.originalCaption || "",
+        mention_paragraphs: fig.paragraphs || [],
+        image_text: fig.imageText || "",
+      };
+      try {
+        const resp = await fetch("/generate_captions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ context }),
+        });
+        if (!resp.ok) {
+          const errText = await resp.text();
+          return { short_caption: { text: "Generation failed", rating: 0 }, long_caption: { text: `[Error ${resp.status}] ${errText}`, rating: 0 } };
         }
-        btn.addEventListener("click", () => selectFigure(figure.id));
-        nav.appendChild(btn);
-      });
-
-      if (!figures.length) {
-        const info = document.createElement("div");
-        info.style.fontSize = "0.9rem";
-        info.style.color = "#888";
-        info.textContent = "No figures yet. Please upload a PDF.";
-        nav.appendChild(info);
+        const data = await resp.json();
+        return {
+          short_caption: { text: data?.short_caption?.text || data.short_caption || "", rating: data?.short_caption?.rating || 0 },
+          long_caption: { text: data?.long_caption?.text || data.long_caption || "", rating: data?.long_caption?.rating || 0 },
+        };
+      } catch (error) {
+        return { short_caption: { text: "Generation failed", rating: 0 }, long_caption: { text: `[Network Error] ${error.message}`, rating: 0 } };
       }
     }
 
+    function getFigureData(figId) {
+      const fig = AppState.figures.find((f) => f.id === figId);
+      if (!fig) return null;
+      const captionDraft = AppState.captions[figId] ?? fig.originalCaption;
+      const ratingObj = AppState.ratings[figId] ?? { rating: fig.rating, explanation: fig.ratingExplanation };
+      const checklist = AppState.checklists[figId] ?? fig.checklist;
+      const ai = AppState.aiCaptions[figId] ?? { short: fig.aiShortCaption, long: fig.aiLongCaption };
+      return { ...fig, captionDraft, ratingObj, checklist, ai };
+    }
+
+    // --- Persistence Logic ---
+    function saveState() {
+      try {
+        localStorage.setItem('scicapenter_state', JSON.stringify(AppState));
+        console.log("[State] Saved to localStorage");
+      } catch (e) {
+        console.error("[State] Save failed", e);
+      }
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('scicapenter_state');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          Object.assign(AppState, parsed);
+          console.log("[State] Loaded from localStorage", AppState);
+          renderNav();
+          if (AppState.currentFigId) {
+            selectFigure(AppState.currentFigId);
+          }
+        }
+      } catch (e) {
+        console.error("[State] Load failed", e);
+      }
+    }
+
+    function clearState() {
+      localStorage.removeItem('scicapenter_state');
+      location.reload();
+    }
+
+    /******************** 3) Render Functions ********************/
     function updateRating(rating, explanation) {
       const starDisplay = document.getElementById("starDisplay");
       const numeric = document.getElementById("numericRating");
-      const filledStars = "★".repeat(rating);
-      const emptyStars = "☆".repeat(5 - rating);
+      const filledStars = String.fromCharCode(9733).repeat(rating);
+      const emptyStars = String.fromCharCode(9734).repeat(5 - rating);
+      
       starDisplay.textContent = filledStars + emptyStars;
       numeric.textContent = `${rating} / 5`;
-      document.getElementById("ratingExplanation").textContent = explanation;
-      document.getElementById("longExplanation").textContent = explanation;
+      const ratingEl = document.getElementById("ratingExplanation");
+      if (ratingEl) ratingEl.textContent = "";
+      document.getElementById("explanationBox").textContent = explanation || "";
     }
 
     function renderChecklist(checklist) {
       const checklistContainer = document.getElementById("checklist");
       checklistContainer.innerHTML = "";
+      
+      const iconGreen = `<svg style="width:20px;height:20px;color:#16a34a;flex-shrink:0;margin-top:1px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+      const iconRed = `<svg style="width:20px;height:20px;color:#dc2626;flex-shrink:0;margin-top:1px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
 
-      Object.entries(checklistLabels).forEach(([key, label]) => {
+      const keys = ["helpfulness", "ocr", "relation", "stats", "takeaway", "visual"];
+      
+      keys.forEach(key => {
+        const isTrue = checklist[key];
         const item = document.createElement("div");
         item.className = "check-item";
+        
+        const iconSpan = document.createElement("span");
+        iconSpan.innerHTML = isTrue ? iconGreen : iconRed;
+        
+        const verb = isTrue ? "mentions" : "doesn't mention";
+        const verbDescribe = isTrue ? "describes" : "doesn't describe";
+        let htmlContent = "";
 
-        const indicator = document.createElement("span");
-        indicator.className =
-          `status-indicator ${checklist[key] ? "status-true" : "status-false"}`;
-
-        const text = document.createElement("span");
-        text.textContent = label;
-
-        item.appendChild(indicator);
-        item.appendChild(text);
+        switch(key) {
+            case "helpfulness":
+                htmlContent = `This caption ${verb} the <span class='highlight'>helpfulness</span> message of the figure.`;
+                break;
+            case "ocr":
+                htmlContent = `This caption ${verb} the <span class='highlight'>ocr</span> message of the figure.`;
+                break;
+            case "relation":
+                htmlContent = `This caption ${verbDescribe} the <span class='highlight'>relation</span> of the figure.`;
+                break;
+            case "stats":
+                htmlContent = `This caption ${verb} the <span class='highlight'>stats</span> of the figure.`;
+                break;
+            case "takeaway":
+                htmlContent = `This caption ${verb} the <span class='highlight'>takeaway</span> message of the figure.`;
+                break;
+            case "visual":
+                htmlContent = `This caption ${verb} the <span class='highlight'>visual</span> of the figure.`;
+                break;
+        }
+        
+        const textSpan = document.createElement("span");
+        textSpan.innerHTML = htmlContent;
+        
+        item.appendChild(iconSpan);
+        item.appendChild(textSpan);
         checklistContainer.appendChild(item);
       });
     }
 
-    function renderAICaptions(figure) {
-      const shortContainer = document.getElementById("shortCaption");
-      shortContainer.innerHTML = `
-        <strong>Short Caption</strong>
-        <span>${figure.aiShortCaption.text}</span>
-        <span>Rating: ${figure.aiShortCaption.rating}/5</span>
-      `;
+    function renderAICaptions(figData) {
+      const short = figData.ai ? figData.ai.short : { text: "N/A", rating: 0 };
+      const long = figData.ai ? figData.ai.long : { text: "N/A", rating: 0 };
+      const getStars = (score) => "★".repeat(Math.max(0, score)) + "☆".repeat(Math.max(0, 5 - score));
 
-      const longContainer = document.getElementById("longCaption");
-      longContainer.innerHTML = `
-        <strong>Long Caption</strong>
-        <span>${figure.aiLongCaption.text}</span>
-        <span>Rating: ${figure.aiLongCaption.rating}/5</span>
+      document.getElementById("shortCaption").innerHTML = `
+        <div class="ai-line" style="flex-direction:column;align-items:flex-start;">
+          <div><strong>Short:</strong> ${short.text}</div>
+          <div style="color:#2563eb; margin-top:4px;">Score: ${getStars(short.rating || 0)}</div>
+          <button class="copy-btn btn-secondary" data-type="short" style="padding:2px 8px;">Copy</button>
+        </div>
+      `;
+      document.getElementById("longCaption").innerHTML = `
+        <div class="ai-line" style="flex-direction:column;align-items:flex-start;">
+          <div><strong>Long:</strong> ${long.text}</div>
+          <div style="color:#2563eb; margin-top:4px;">Score: ${getStars(long.rating || 0)}</div>
+          <button class="copy-btn btn-secondary" data-type="long" style="padding:2px 8px;">Copy</button>
+        </div>
       `;
     }
 
     function renderParagraphs(paragraphs) {
-      const list = document.getElementById("paragraphList");
+      const list = document.getElementById("mentionParagraphs");
       list.innerHTML = "";
-      paragraphs.forEach((para) => {
-        const p = document.createElement("p");
-        p.textContent = para;
+      (paragraphs || []).forEach((para) => {
+        const p = document.createElement("div");
+        p.className = "paragraphs-box";
+        p.textContent = typeof para === 'string' ? para : para.text;
         list.appendChild(p);
       });
     }
 
-    function selectFigure(figureId) {
-      const figure = figures.find((f) => f.id === figureId);
-      if (!figure) return;
+    function renderNav() {
+      const nav = document.getElementById("figureNavList");
+      nav.innerHTML = "";
+      AppState.figures.forEach((figure) => {
+        const card = document.createElement("div");
+        card.className = "thumb-card";
+        if (AppState.currentFigId === figure.id) {
+          card.classList.add("active");
+        }
+        const img = document.createElement("img");
+        img.src = figure.imageUrl || "";
+        img.alt = figure.title;
+        img.onerror = () => { img.src = 'https://via.placeholder.com/64?text=Err'; };
 
-      console.log("[FIGURE]", figure.title, figure.imageUrl); 
-      
-      state.selectedFigure = figure;
-      state.currentCaption = figure.originalCaption || "";
+        const textWrap = document.createElement("div");
+        const t1 = document.createElement("div");
+        t1.className = "thumb-title";
+        t1.textContent = figure.title;
+        const t2 = document.createElement("div");
+        t2.className = "thumb-sub";
+        t2.textContent = (figure.imageLabel || "Figure preview").substring(0, 30) + "...";
+        
+        textWrap.appendChild(t1);
+        textWrap.appendChild(t2);
+        card.appendChild(img);
+        card.appendChild(textWrap);
+        card.addEventListener("click", () => selectFigure(figure.id));
+        nav.appendChild(card);
+      });
 
-      const figureBox = document.getElementById("figureBox");
-      if (figure.imageUrl) {
-        figureBox.innerHTML = `
-          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;">
-            <img
-              src="${figure.imageUrl}"
-              alt="${figure.title}"
-              style="
-                max-width:100%;
-                max-height:260px;
-                object-fit:contain;
-                border-radius:8px;
-                border:1px solid #d8deeb;
-              "
-            />
-            <div style="font-size:0.95rem;font-weight:600;text-align:center;">
-              ${figure.title}: ${figure.imageLabel}
-            </div>
-          </div>
-        `;
-      } else {
-        figureBox.textContent = `${figure.title}: ${figure.imageLabel}`;
+      if (!AppState.figures.length) {
+        const info = document.createElement("div");
+        info.style.fontSize = "0.9rem";
+        info.style.color = "#888";
+        info.style.textAlign = "center";
+        info.style.padding = "20px";
+        info.textContent = "No figures yet. Please upload a PDF.";
+        nav.appendChild(info);
       }
-
-      document.getElementById("originalCaption").textContent =
-        figure.originalCaption || "No original caption.";
-
-      const textarea = document.getElementById("captionEditor");
-      textarea.value = state.currentCaption;
-
-      updateRating(figure.rating, figure.ratingExplanation);
-      renderChecklist(figure.checklist);
-      renderAICaptions(figure);
-      renderParagraphs(figure.paragraphs);
-
-      renderFigureNav();
     }
 
-    /******************** 4. 事件绑定 & 初始化 ********************/
-    window.addEventListener("DOMContentLoaded", async () => {
-      console.log("[INIT] DOMContentLoaded");
-
-      // 初始：用 sample 数据渲染
-      renderFigureNav();
-      if (figures.length) {
-        selectFigure(figures[0].id);
-      } else {
+    function renderMainView() {
+      const figData = getFigureData(AppState.currentFigId);
+      if (!figData) {
+        document.getElementById("figureTitle").textContent = "Select or upload a PDF to begin.";
+        const imgEl = document.getElementById("mainImage");
+        imgEl.style.display = "none";
+        imgEl.removeAttribute("src");
+        imgEl.alt = "No figure image";
+        document.getElementById("originalCaptionText").textContent = "No original caption.";
+        renderParagraphs([]);
+        updateRating(0, "No rating yet.");
         renderChecklist({
           helpfulness: false,
           ocr: false,
@@ -755,79 +788,180 @@
           takeaway: false,
           visual: false,
         });
+        renderAICaptions({ ai: { short: { text: "N/A", rating: 0 }, long: { text: "N/A", rating: 0 } } });
+        return;
       }
 
-      // Caption 编辑监听
-      document.getElementById("captionEditor").addEventListener("input", async (event) => {
-        const caption = event.target.value;
-        state.currentCaption = caption;
-        const { rating, explanation } = await callRateCaption(caption);
-        updateRating(rating, explanation);
-      });
+      const titleEl = document.getElementById("figureTitle");
+      const imgEl = document.getElementById("mainImage");
+      if (titleEl) titleEl.textContent = figData.title && figData.title !== "undefined" ? figData.title : figData.id;
+      if (imgEl) {
+        if (figData.imageUrl) {
+          imgEl.style.display = "block";
+          imgEl.src = figData.imageUrl;
+          imgEl.alt = figData.title;
+        } else {
+          imgEl.style.display = "none";
+          imgEl.removeAttribute("src");
+          imgEl.alt = "No figure image";
+        }
+      }
 
-      // 上传监听
-      const fileInput = document.getElementById("pdfInput");
-      if (!fileInput) {
-        console.error("[INIT] Cannot find #pdfInput");
-      } else {
-        fileInput.addEventListener("change", async (event) => {
-          const file = event.target.files[0];
-          if (!file) {
-            console.warn("[UPLOAD] No file selected");
-            return;
+      document.getElementById("originalCaptionText").textContent =
+        figData.originalCaption || "No original caption.";
+
+      const textarea = document.getElementById("captionEditor");
+      textarea.value = figData.captionDraft || "";
+
+      updateRating(figData.ratingObj?.rating ?? 0, figData.ratingObj?.explanation ?? "Rating not available yet.");
+      renderChecklist(figData.checklist || {});
+      renderAICaptions(figData);
+      renderParagraphs(figData.paragraphs || []);
+    }
+
+    /******************** 4) State Management ********************/
+    function updateFigures(newFigures, newDocId = null) {
+      AppState.docId = newDocId;
+      AppState.figures = newFigures;
+      AppState.captions = {};
+      AppState.ratings = {};
+      AppState.checklists = {};
+      AppState.aiCaptions = {};
+      AppState.currentFigId = newFigures.length ? newFigures[0].id : null;
+      renderNav();
+      renderMainView();
+      saveState();
+    }
+
+    function selectFigure(figId) {
+      // Save current draft before switching
+      if (AppState.currentFigId) {
+        const textarea = document.getElementById("captionEditor");
+        if (textarea) {
+          AppState.captions[AppState.currentFigId] = textarea.value;
+        }
+      }
+      AppState.currentFigId = figId;
+      renderNav();
+      renderMainView();
+      saveState();
+    }
+
+    /******************** 5) Upload & Events ********************/
+    async function handleUpload(file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const uploadZone = document.querySelector('.upload-zone div');
+      const originalText = uploadZone.textContent;
+      uploadZone.textContent = "Processing PDF... Please wait...";
+
+      try {
+        const resp = await fetch("/upload_pdf", {
+          method: "POST",
+          body: formData,
+        });
+        if (!resp.ok) {
+          const msg = `Upload failed: ${resp.status}`;
+          console.error(msg);
+          alert(msg);
+          return;
+        }
+        const data = await resp.json();
+        console.log("Backend response:", data);
+        const mapped = mapBackendFiguresToUI(data.figures || []);
+        updateFigures(mapped, data.doc_id);
+      } catch (err) {
+        console.error("Error during upload:", err);
+        alert(`Error during upload: ${err.message}`);
+      } finally {
+        uploadZone.textContent = originalText;
+      }
+    }
+
+    function initApp() {
+      loadState();
+      renderNav();
+      renderMainView();
+
+      const captionEl = document.getElementById("captionEditor");
+      if (captionEl) {
+        captionEl.addEventListener("input", () => {
+          if (AppState.currentFigId) {
+            AppState.captions[AppState.currentFigId] = captionEl.value;
           }
-
-          console.log("[UPLOAD] PDF selected:", file.name);
-          const formData = new FormData();
-          formData.append("file", file);
-
-          try {
-            const resp = await fetch(`${BACKEND_BASE_URL}/upload_pdf`, {
-              method: "POST",
-              body: formData,
-            });
-
-            console.log("[UPLOAD] fetch finished, status =", resp.status);
-
-            if (!resp.ok) {
-              console.error("[UPLOAD] Upload failed:", resp.status, resp.statusText);
-              alert("Upload failed: " + resp.status);
-              return;
-            }
-
-            const data = await resp.json();
-            console.log("[UPLOAD] PDF parsed JSON:", data);
-
-            if (!data || !Array.isArray(data.results)) {
-              console.error("[UPLOAD] Backend response has no results array:", data);
-              alert("Backend response has no results array.");
-              return;
-            }
-
-            figures = mapBackendResultsToUI(data.results);
-            renderFigureNav();
-            if (figures.length > 0) {
-              selectFigure(figures[0].id);
-            } else {
-              document.getElementById("figureBox").textContent =
-                "No figures extracted from this PDF.";
-              document.getElementById("originalCaption").textContent = "No figure selected.";
-            }
-          } catch (err) {
-            console.error("[UPLOAD] Error during upload:", err);
-            alert("Error during upload, see console for details.");
-          }
+          saveState();
         });
       }
 
-      // 可选：健康检查
-      try {
-        const healthResp = await fetch(`${BACKEND_BASE_URL}/health`);
-        console.log("[HEALTH] status", healthResp.status, "body", await healthResp.json());
-      } catch (e) {
-        console.error("[HEALTH] call failed", e);
-      }
-    });
+      const fileInput = document.getElementById("pdfInput");
+      fileInput.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (!file) {
+          console.warn("[UPLOAD] No file selected");
+          return;
+        }
+        handleUpload(file);
+      });
+
+      const rateBtn = document.getElementById("btnRate");
+      rateBtn.addEventListener("click", async () => {
+        const caption = document.getElementById("captionEditor").value;
+        document.getElementById("explanationBox").textContent = "Analyzing with DeepSeek...";
+
+        const { rating, explanation, checklist } = await callRateCaption(caption);
+
+        if (AppState.currentFigId) {
+          AppState.ratings[AppState.currentFigId] = { rating, explanation, checklist };
+        }
+
+        updateRating(rating, explanation);
+
+        if (checklist) {
+          if (AppState.currentFigId) {
+            AppState.checklists[AppState.currentFigId] = checklist;
+          }
+          renderChecklist(checklist);
+        }
+        saveState();
+      });
+
+      const genBtn = document.getElementById("btnGenerate");
+      genBtn.addEventListener("click", async () => {
+        const shortEl = document.getElementById("shortCaption");
+        const longEl = document.getElementById("longCaption");
+        shortEl.innerHTML = "Generating...";
+        longEl.innerHTML = "Generating...";
+
+        const result = await callGenerateCaptions();
+        const figId = AppState.currentFigId;
+        if (figId) {
+          AppState.aiCaptions[figId] = {
+            short: { text: result.short_caption?.text || "", rating: result.short_caption?.rating || 0 },
+            long: { text: result.long_caption?.text || "", rating: result.long_caption?.rating || 0 }
+          };
+        }
+        renderMainView();
+        saveState();
+      });
+
+      document.addEventListener("click", (e) => {
+        if (e.target && e.target.classList.contains("copy-btn")) {
+          const type = e.target.getAttribute("data-type");
+          const fig = getFigureData(AppState.currentFigId);
+          if (!fig) return;
+          const text = type === "long" ? fig.ai.long.text : fig.ai.short.text;
+          const textarea = document.getElementById("captionEditor");
+          if (textarea) {
+            textarea.value = text;
+            AppState.captions[AppState.currentFigId] = text;
+          }
+        }
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", initApp);
   </script>
+
 </body>
 </html>

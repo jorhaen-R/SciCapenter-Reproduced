@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+.env.local
+
+# Data (我们不传 PDF 和 生成的图片，太大了)
+uploaded_pdfs/
+pdffigures2_output/
+
+# Docker
+.pytest_cache/
+.coverage
+
+# OS
+.DS_Store
+Thumbs.db
