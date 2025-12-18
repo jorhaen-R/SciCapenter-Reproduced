@@ -1,9 +1,12 @@
-FROM python:3.9-slim
+﻿FROM python:3.9-slim
 
 # Install Java runtime for pdffigures2
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends default-jre-headless && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends \
+    default-jre-headless \
+    libfontconfig1 \
+    libxtst6 \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app

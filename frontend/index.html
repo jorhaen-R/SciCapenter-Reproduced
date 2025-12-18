@@ -57,6 +57,22 @@
       color: var(--primary-blue);
     }
 
+    #modelSelector {
+      border: 1px solid var(--border-gray);
+      background: #fff;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+      outline: none;
+    }
+    #modelSelector:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
     main {
       flex: 1;
       display: grid;
@@ -190,7 +206,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 180px;
+      flex: 1;
       overflow-y: auto;
       padding-right: 6px;
       scrollbar-width: thin;
@@ -255,6 +271,7 @@
 
     .stars { color: var(--primary-blue); letter-spacing: 4px; font-size: 1.2rem; }
     .rating-wrap { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    .stars-small { color: var(--primary-blue); letter-spacing: 2px; font-size: 0.95rem; margin-top: 6px; }
     
 /* --- E区 Checklist 完美对齐样式 --- */
     
@@ -339,6 +356,24 @@
       letter-spacing: -0.01em;
     }
 
+    .btn-teach {
+      width: 100%;
+      margin-top: 10px;
+      background: var(--success);
+      color: #fff;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      box-shadow: 0 10px 20px rgba(14, 167, 90, 0.2);
+    }
+    .btn-teach:hover {
+      filter: brightness(0.98);
+    }
+
     @media (max-width: 1200px) {
       main { grid-template-columns: 1fr; height: auto; overflow: auto; }
     }
@@ -348,6 +383,10 @@
   <header>
     <div class="title">SciCapenter Reproduction</div>
     <div class="links">
+      <select id="modelSelector" aria-label="Model Selector">
+        <option value="deepseek">DeepSeek-V3 (Cloud)</option>
+        <option value="local">Qwen-0.5B (Local)</option>
+      </select>
       <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
       <span style="color: var(--muted);">/</span>
       <a href="#about">About</a>
@@ -363,7 +402,7 @@
     </div>
 
     <!-- Middle Column -->
-    <div style="display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden;">
+    <div style="display:flex;flex-direction:column;gap:10px;min-height:0;overflow:hidden;height:100%;">
       <!-- (A) Upload Panel -->
       <div class="panel" id="uploadPanel" style="padding:0;flex:0 0 auto;">
         <label class="upload-zone" for="pdfInput">
@@ -384,7 +423,7 @@
       </div>
 
       <!-- (I) Figure-Mentioning Paragraphs -->
-      <div class="panel" style="flex:1;min-height:0;overflow:auto;">
+      <div class="panel" style="display:flex;flex-direction:column;flex:1;min-height:0;">
         <p class="section-title">Figure-mentioning Paragraphs (I)</p>
         <div id="mentionParagraphs" style="flex:1;min-height:0;"></div>
       </div>
@@ -396,6 +435,7 @@
       <div class="panel" style="min-height:0;overflow:auto;">
         <p class="section-title">Caption Editor (D)</p>
         <textarea id="captionEditor" placeholder="Craft or refine your caption here..."></textarea>
+        <button id="btnTeach" class="btn-teach">✅ Confirm & Teach AI</button>
       </div>
 
       <!-- (E) Caption Analysis -->
@@ -539,7 +579,7 @@
       };
 
       try {
-        const resp = await fetch("/rate_caption", {
+        const resp = await fetch("/rate_caption?model_pref=deepseek", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ caption, context }),
@@ -563,14 +603,15 @@
 
     async function callGenerateCaptions() {
       const fig = AppState.figures.find((f) => f.id === AppState.currentFigId);
-      if (!fig) return { short_caption: "", long_caption: "" };
+      if (!fig) return { short_caption: { text: "", rating: 0 }, long_caption: { text: "", rating: 0 } };
       const context = {
         original_caption: fig.originalCaption || "",
         mention_paragraphs: fig.paragraphs || [],
         image_text: fig.imageText || "",
       };
       try {
-        const resp = await fetch("/generate_captions", {
+        const modelPref = document.getElementById("modelSelector")?.value || "deepseek";
+        const resp = await fetch(`/generate_captions?model_pref=${encodeURIComponent(modelPref)}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ context }),
@@ -580,10 +621,9 @@
           return { short_caption: { text: "Generation failed", rating: 0 }, long_caption: { text: `[Error ${resp.status}] ${errText}`, rating: 0 } };
         }
         const data = await resp.json();
-        return {
-          short_caption: { text: data?.short_caption?.text || data.short_caption || "", rating: data?.short_caption?.rating || 0 },
-          long_caption: { text: data?.long_caption?.text || data.long_caption || "", rating: data?.long_caption?.rating || 0 },
-        };
+        const short = data?.short_caption || { text: "", rating: 0 };
+        const long = data?.long_caption || { text: "", rating: 0 };
+        return { short_caption: short, long_caption: long };
       } catch (error) {
         return { short_caption: { text: "Generation failed", rating: 0 }, long_caption: { text: `[Network Error] ${error.message}`, rating: 0 } };
       }
@@ -699,20 +739,25 @@
     function renderAICaptions(figData) {
       const short = figData.ai ? figData.ai.short : { text: "N/A", rating: 0 };
       const long = figData.ai ? figData.ai.long : { text: "N/A", rating: 0 };
-      const getStars = (score) => "★".repeat(Math.max(0, score)) + "☆".repeat(Math.max(0, 5 - score));
+      const getStars = (score) => {
+        const rating = Math.max(0, Math.min(5, Number(score) || 0));
+        const filled = String.fromCharCode(9733).repeat(rating);
+        const empty = String.fromCharCode(9734).repeat(5 - rating);
+        return `${filled}${empty} (${rating}/5)`;
+      };
 
       document.getElementById("shortCaption").innerHTML = `
-        <div class="ai-line" style="flex-direction:column;align-items:flex-start;">
+        <div class="ai-caption">
           <div><strong>Short:</strong> ${short.text}</div>
-          <div style="color:#2563eb; margin-top:4px;">Score: ${getStars(short.rating || 0)}</div>
-          <button class="copy-btn btn-secondary" data-type="short" style="padding:2px 8px;">Copy</button>
+          <div class="stars-small">${getStars(short.rating || 0)}</div>
+          <button class="copy-btn btn-secondary" data-type="short" style="padding:2px 8px;margin-top:8px;">Copy</button>
         </div>
       `;
       document.getElementById("longCaption").innerHTML = `
-        <div class="ai-line" style="flex-direction:column;align-items:flex-start;">
+        <div class="ai-caption">
           <div><strong>Long:</strong> ${long.text}</div>
-          <div style="color:#2563eb; margin-top:4px;">Score: ${getStars(long.rating || 0)}</div>
-          <button class="copy-btn btn-secondary" data-type="long" style="padding:2px 8px;">Copy</button>
+          <div class="stars-small">${getStars(long.rating || 0)}</div>
+          <button class="copy-btn btn-secondary" data-type="long" style="padding:2px 8px;margin-top:8px;">Copy</button>
         </div>
       `;
     }
@@ -944,6 +989,61 @@
         renderMainView();
         saveState();
       });
+
+      const teachBtn = document.getElementById("btnTeach");
+      if (teachBtn) {
+        teachBtn.addEventListener("click", async () => {
+          if (!AppState.currentFigId) {
+            alert("Please select a figure first.");
+            return;
+          }
+
+          const figData = getFigureData(AppState.currentFigId);
+          if (!figData) {
+            alert("Please select a figure first.");
+            return;
+          }
+
+          const payload = {
+            figure_id: AppState.currentFigId,
+            final_caption: document.getElementById("captionEditor")?.value || "",
+            original_caption: figData.originalCaption || "",
+            context_paragraphs: (figData.paragraphs || [])
+              .map((p) => (typeof p === "string" ? p : (p?.text || "")))
+              .filter(Boolean),
+            ocr_text: figData.imageText || "",
+          };
+
+          const originalBtnText = teachBtn.textContent;
+          teachBtn.disabled = true;
+          teachBtn.textContent = "Saving...";
+
+          try {
+            const resp = await fetch("/submit_feedback", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (!resp.ok) {
+              const errText = await resp.text();
+              throw new Error(errText || `Request failed with ${resp.status}`);
+            }
+
+            teachBtn.textContent = "Saved!";
+            setTimeout(() => {
+              teachBtn.textContent = originalBtnText;
+              teachBtn.disabled = false;
+            }, 1400);
+
+            alert("Thank you! The model will learn from your edit.");
+          } catch (error) {
+            teachBtn.textContent = originalBtnText;
+            teachBtn.disabled = false;
+            alert(`Failed to submit feedback: ${error.message}`);
+          }
+        });
+      }
 
       document.addEventListener("click", (e) => {
         if (e.target && e.target.classList.contains("copy-btn")) {

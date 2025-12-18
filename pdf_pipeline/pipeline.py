@@ -187,11 +187,19 @@ def extract_from_pdf(pdf_path: str, output_root: Path, static_base: str) -> List
 
     results = []
     for fig in parsed.figures:
+        # Robust Path Construction
         try:
+            # Try to get path relative to the UUID folder
             rel_path = Path(fig.image_path).relative_to(output_root)
             web_path = f"{static_base}/{rel_path.as_posix()}"
         except ValueError:
-            web_path = f"{static_base}/{Path(fig.image_path).name}"
+            # Fallback for Linux/Docker relative paths
+            # If the path is just "images/figure-1.png", relative_to absolute path fails.
+            fname = Path(fig.image_path).name
+            if "images" in str(fig.image_path):
+                web_path = f"{static_base}/images/{fname}"
+            else:
+                web_path = f"{static_base}/{fname}"
 
         paragraphs = mentions_map.get(fig.figure_id, [])
         results.append({

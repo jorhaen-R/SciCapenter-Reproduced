@@ -10,3 +10,13 @@ services:
       - ./pdffigures2_output:/app/pdffigures2_output
     env_file:
       - .env
+
+  tunnel:
+    image: ngrok/ngrok:latest
+    command: http --domain=${NGROK_DOMAIN} scicapenter-app:8000
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    ports:
+      - "4040:4040"
+    depends_on:
+      - scicapenter-app
