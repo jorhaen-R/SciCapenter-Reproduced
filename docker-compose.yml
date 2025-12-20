@@ -1,13 +1,21 @@
-version: "3.9"
-
 services:
   scicapenter-app:
     build: .
+    container_name: scicapenter-app
     ports:
       - "8000:8000"
     volumes:
-      - ./uploaded_pdfs:/app/uploaded_pdfs
+      # 1. 挂载输出目录，确保容器能读取到生成的图片
       - ./pdffigures2_output:/app/pdffigures2_output
+      # 2. 挂载上传目录 (可选，为了持久?
+      - ./uploaded_pdfs:/app/uploaded_pdfs
+      # 3. 挂载本地模型 (如果你训练了模型)
+      - ./backend/local_model:/app/backend/local_model
+    environment:
+      # 直接读取宿主机的 .env 文件
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}
+      - ENABLE_LOCAL_MODEL=1
     env_file:
       - .env
 

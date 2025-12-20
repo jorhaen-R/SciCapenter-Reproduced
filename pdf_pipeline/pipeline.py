@@ -179,27 +179,21 @@ def run_pdffigures2(pdf_path: str, output_dir: str) -> bool:
 # ==============================================================================
 def extract_from_pdf(pdf_path: str, output_root: Path, static_base: str) -> List[Dict[str, Any]]:
     from .parse_pdf import parse_pdf
-    
     parsed = parse_pdf(pdf_path, output_root)
     
+    # Extract text (Keep your existing sniper/layout logic here, do not remove it)
     temp_figures = [{"figure_id": fig.figure_id} for fig in parsed.figures]
     mentions_map = extract_mention_paragraphs(pdf_path, temp_figures)
 
+    # Get UUID from filename
+    doc_id = Path(pdf_path).stem
+
     results = []
     for fig in parsed.figures:
-        # Robust Path Construction
-        try:
-            # Try to get path relative to the UUID folder
-            rel_path = Path(fig.image_path).relative_to(output_root)
-            web_path = f"{static_base}/{rel_path.as_posix()}"
-        except ValueError:
-            # Fallback for Linux/Docker relative paths
-            # If the path is just "images/figure-1.png", relative_to absolute path fails.
-            fname = Path(fig.image_path).name
-            if "images" in str(fig.image_path):
-                web_path = f"{static_base}/images/{fname}"
-            else:
-                web_path = f"{static_base}/{fname}"
+        # Force correct web path construction
+        file_name = Path(fig.image_path).name
+        # Match pdffigures2 output naming: images/figure<doc>-FigureX-1.png
+        web_path = f"pdffigures2_output/{doc_id}/images/{file_name}"
 
         paragraphs = mentions_map.get(fig.figure_id, [])
         results.append({

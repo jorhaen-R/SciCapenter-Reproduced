@@ -579,7 +579,8 @@
       };
 
       try {
-        const resp = await fetch("/rate_caption?model_pref=deepseek", {
+        const modelPref = document.getElementById("modelSelector")?.value || "deepseek";
+        const resp = await fetch(`/rate_caption?model_pref=${encodeURIComponent(modelPref)}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ caption, context }),

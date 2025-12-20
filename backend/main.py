@@ -1,23 +1,21 @@
-import os
+﻿import os
+import threading
 import shutil
 import uuid
 import json
 import re
-from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, UploadFile, File, HTTPException, Response
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from openai import OpenAI
-from textwrap import dedent
 
-# ---------------- Local Model Imports (Optional) ----------------
+# Optional local model deps
 try:
     import torch
     from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -29,47 +27,25 @@ except Exception as _local_import_err:  # pragma: no cover
     PeftModel = None
     print(f"[LocalModel] Optional deps not available: {_local_import_err}")
 
-# ---------------- 1. 标准化配置加载 (Standard Config) ----------------
-
-# 定义基准路径: 根目录 (SciCapenter-Reproduced)
-# backend/main.py -> parent = backend -> parent = Root
-BASE_DIR = Path(__file__).resolve().parent.parent 
-
-# 定义 .env 文件的绝对路径 (标准位置：根目录)
+# ---------------- 1) Config ----------------
+BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / ".env"
-
-# 加载环境变量
-print(f"DEBUG: Looking for config at: {ENV_PATH}")
-if ENV_PATH.exists():
-    load_dotenv(dotenv_path=ENV_PATH, override=True)
-    print("DEBUG: ✅ .env file found and loaded.")
-else:
-    print("DEBUG: ❌ .env file NOT found! Falling back to system env.")
-
-# 获取 Key
-api_key = os.getenv("OPENAI_API_KEY")
-base_url = os.getenv("OPENAI_BASE_URL")
-
-# 安全打印用于调试
-safe_key = f"{api_key[:5]}...{api_key[-4:]}" if api_key else "None"
-print(f"DEBUG: Final API Key: {safe_key}")
-print(f"DEBUG: Final Base URL: {base_url}")
-
-# 初始化 DeepSeek 客户端
-if not api_key:
-    print("WARNING: No API Key found. AI features will fail.")
-
-client = OpenAI(
-    api_key=api_key,
-    base_url=base_url if base_url else "https://api.deepseek.com"
-)
-
-# ---------------- 2. 路径配置 ----------------
 FRONTEND_DIR = BASE_DIR / "frontend"
 UPLOAD_DIR = BASE_DIR / "uploaded_pdfs"
 OUTPUT_DIR = BASE_DIR / "pdffigures2_output"
 
-# 导入 Pipeline (处理模块路径问题)
+if ENV_PATH.exists():
+    load_dotenv(dotenv_path=ENV_PATH, override=True)
+
+api_key = os.getenv("OPENAI_API_KEY")
+base_url = os.getenv("OPENAI_BASE_URL")
+
+client = OpenAI(
+    api_key=api_key,
+    base_url=base_url if base_url else "https://api.deepseek.com",
+)
+
+# Import pipeline with fallback path tweak
 try:
     from pdf_pipeline import pipeline
 except ImportError:
@@ -77,12 +53,12 @@ except ImportError:
     sys.path.append(str(BASE_DIR))
     from pdf_pipeline import pipeline
 
-# 确保文件夹存在
+# Ensure data dirs exist
 for d in [UPLOAD_DIR, OUTPUT_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
-# ---------------- Local Model Globals (Hybrid Architecture) ----------------
-LOCAL_BASE_MODEL_ID = "Qwen/Qwen2.5-0.5B-Instruct"
+# ---------------- 2) Local model globals ----------------
+LOCAL_BASE_MODEL_ID = os.getenv("LOCAL_BASE_MODEL_ID", "Qwen/Qwen2.5-0.5B-Instruct")
 LOCAL_ADAPTER_DIR = Path(__file__).resolve().parent / "local_model"
 LOCAL_MODEL = None
 LOCAL_TOKENIZER = None
@@ -90,69 +66,54 @@ LOCAL_DEVICE = None
 
 
 def _load_local_model_once() -> None:
+    """Load the local model if available; safe to call multiple times."""
     global LOCAL_MODEL, LOCAL_TOKENIZER, LOCAL_DEVICE
 
     if LOCAL_MODEL is not None and LOCAL_TOKENIZER is not None:
         return
 
-    if torch is None or AutoTokenizer is None or AutoModelForCausalLM is None or PeftModel is None:
-        print("[LocalModel] Not loading: missing torch/transformers/peft.")
-        return
-
-    if not LOCAL_ADAPTER_DIR.exists():
-        print(f"[LocalModel] Adapter not found at {LOCAL_ADAPTER_DIR} (train locally first).")
-        return
-
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-    LOCAL_DEVICE = device
-    torch_dtype = torch.float16 if device.type == "cuda" else torch.float32
-
-    print(f"[LocalModel] Loading tokenizer: {LOCAL_BASE_MODEL_ID}")
-    tokenizer = AutoTokenizer.from_pretrained(LOCAL_BASE_MODEL_ID, use_fast=True)
-    if getattr(tokenizer, "pad_token", None) is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    tokenizer.padding_side = "right"
-
-    print(f"[LocalModel] Loading base model: {LOCAL_BASE_MODEL_ID} on {device}")
-    base_model = AutoModelForCausalLM.from_pretrained(LOCAL_BASE_MODEL_ID, torch_dtype=torch_dtype)
-    base_model.to(device)
-
-    print(f"[LocalModel] Loading LoRA adapter: {LOCAL_ADAPTER_DIR}")
-    model = PeftModel.from_pretrained(base_model, str(LOCAL_ADAPTER_DIR))
-    model.to(device)
-    model.eval()
-
-    LOCAL_MODEL = model
-    LOCAL_TOKENIZER = tokenizer
-    print("[LocalModel] Loaded successfully.")
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
     try:
-        _load_local_model_once()
+        if torch is None or AutoTokenizer is None or AutoModelForCausalLM is None or PeftModel is None:
+            print("[LocalModel] Not loading: missing torch/transformers/peft.")
+            return
+
+        if not LOCAL_ADAPTER_DIR.exists():
+            print(f"[LocalModel] Adapter not found at {LOCAL_ADAPTER_DIR} (train locally first).")
+            return
+
+        device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        LOCAL_DEVICE = device
+        torch_dtype = torch.float16 if device.type == "cuda" else torch.float32
+
+        print(f"[LocalModel] Loading tokenizer: {LOCAL_BASE_MODEL_ID}")
+        tokenizer = AutoTokenizer.from_pretrained(LOCAL_BASE_MODEL_ID, use_fast=True)
+        if getattr(tokenizer, "pad_token", None) is None:
+            tokenizer.pad_token = tokenizer.eos_token
+        tokenizer.padding_side = "right"
+
+        print(f"[LocalModel] Loading base model: {LOCAL_BASE_MODEL_ID} on {device}")
+        base_model = AutoModelForCausalLM.from_pretrained(LOCAL_BASE_MODEL_ID, torch_dtype=torch_dtype)
+        base_model.to(device)
+
+        print(f"[LocalModel] Loading LoRA adapter: {LOCAL_ADAPTER_DIR}")
+        model = PeftModel.from_pretrained(base_model, str(LOCAL_ADAPTER_DIR))
+        model.to(device)
+        model.eval()
+
+        LOCAL_MODEL = model
+        LOCAL_TOKENIZER = tokenizer
+        print("[LocalModel] Loaded successfully.")
     except Exception as e:
-        print(f"[LocalModel] Failed to load local model: {e}")
-    yield
-    try:
-        global LOCAL_MODEL, LOCAL_TOKENIZER, LOCAL_DEVICE
-        LOCAL_MODEL = None
-        LOCAL_TOKENIZER = None
-        LOCAL_DEVICE = None
-        if torch is not None and torch.cuda.is_available():
-            torch.cuda.empty_cache()
-    except Exception:
-        pass
+        print(f"[LocalModel] Load failed: {e}")
 
 
-app = FastAPI(title="SciCapenter Backend", lifespan=lifespan)
+app = FastAPI(title="SciCapenter Backend")
 
-# ---------------- 3. 中间件 (CORS) ----------------
-# 暴力 CORS 解决本地调试问题
+
+# ---------------- 3) Manual CORS middleware ----------------
 @app.middleware("http")
 async def cors_handler(request, call_next):
     if request.method == "OPTIONS":
-        from fastapi.responses import JSONResponse
         return JSONResponse(
             content="ok",
             status_code=200,
@@ -168,11 +129,13 @@ async def cors_handler(request, call_next):
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
 
-# ---------------- 4. 数据模型 ----------------
+
+# ---------------- 4) Models ----------------
 class RatingDimensions(BaseModel):
     clarity: int = 0
     completeness: int = 0
     faithfulness: int = 0
+
 
 class CaptionChecklist(BaseModel):
     helpfulness: bool = False
@@ -182,79 +145,85 @@ class CaptionChecklist(BaseModel):
     takeaway: bool = False
     visual: bool = False
 
+
 class RatingContext(BaseModel):
     original_caption: str = ""
     mention_paragraphs: List[str] = []
     image_text: str = ""
 
+
 class RateCaptionRequest(BaseModel):
     caption: str
     context: Optional[RatingContext] = None
+
 
 class RateCaptionResponse(BaseModel):
     score: int
     explanation: str
     dimensions: RatingDimensions
     checklist: CaptionChecklist
-    model: str 
+    model: str
+
 
 class GenerateCaptionRequest(BaseModel):
-    # We send the same context as rating
     context: RatingContext
+
 
 class GeneratedItem(BaseModel):
     text: str
     rating: int
 
+
 class GenerateCaptionResponse(BaseModel):
     short_caption: GeneratedItem
     long_caption: GeneratedItem
+
 
 class FeedbackRequest(BaseModel):
     figure_id: str
     original_caption: str
     context_paragraphs: List[str]
     ocr_text: str
-    final_caption: str  # The edited caption the user is happy with
-    rating: int = 0     # Optional user self-rating
+    final_caption: str
+    rating: int = 0
 
-# ---------------- 5. 核心逻辑函数 ----------------
+
+# ---------------- 5) Helpers ----------------
 def clean_json_string(json_str: str) -> str:
-    """清洗 LLM 返回的 JSON 字符串"""
     cleaned = re.sub(r"^```json\s*", "", json_str, flags=re.MULTILINE)
     cleaned = re.sub(r"^```\s*", "", cleaned, flags=re.MULTILINE)
     cleaned = re.sub(r"```$", "", cleaned, flags=re.MULTILINE)
     return cleaned.strip()
 
+
 def heuristic_rate(caption: str) -> RateCaptionResponse:
-    """兜底规则评分"""
     words = len(caption.split())
     has_stats = bool(re.search(r"\d", caption))
     checklist = CaptionChecklist(stats=has_stats)
     if words < 10:
         return RateCaptionResponse(
-            score=2, 
-            explanation="[Rule] Caption is too short to be informative.", 
+            score=2,
+            explanation="[Rule] Caption is too short to be informative.",
             dimensions=RatingDimensions(clarity=2, completeness=1, faithfulness=3),
             checklist=checklist,
-            model="heuristic"
+            model="heuristic",
         )
-    elif words > 100:
+    if words > 100:
         return RateCaptionResponse(
-            score=5, 
-            explanation="[Rule] Detailed caption, likely covers key points.", 
+            score=5,
+            explanation="[Rule] Detailed caption, likely covers key points.",
             dimensions=RatingDimensions(clarity=4, completeness=5, faithfulness=4),
             checklist=checklist,
-            model="heuristic"
+            model="heuristic",
         )
-    else:
-        return RateCaptionResponse(
-            score=3, 
-            explanation="[Rule] Moderate length.", 
-            dimensions=RatingDimensions(clarity=3, completeness=3, faithfulness=3),
-            checklist=checklist,
-            model="heuristic"
-        )
+    return RateCaptionResponse(
+        score=3,
+        explanation="[Rule] Moderate length.",
+        dimensions=RatingDimensions(clarity=3, completeness=3, faithfulness=3),
+        checklist=checklist,
+        model="heuristic",
+    )
+
 
 def heuristic_rate_with_model(caption: str, model_label: str) -> RateCaptionResponse:
     base = heuristic_rate(caption)
@@ -266,14 +235,10 @@ def heuristic_rate_with_model(caption: str, model_label: str) -> RateCaptionResp
         model=model_label,
     )
 
+
 def analyze_with_llm(caption: str, context: Optional[RatingContext] = None) -> Optional[RateCaptionResponse]:
-    """调用 DeepSeek AI"""
     try:
-        print(f"[AI] Requesting DeepSeek for: {caption[:30]}...")
         ctx_obj = context or RatingContext()
-        print(f"--------------------------------------------------")
-        print(f"[DEBUG] OCR Text for AI: {context.image_text}")
-        print(f"--------------------------------------------------")
         user_content = (
             f'Target Caption: "{caption}"\n\n'
             "Context Info:\n"
@@ -300,13 +265,9 @@ def analyze_with_llm(caption: str, context: Optional[RatingContext] = None) -> O
             "Checklist and Score:\n"
             "- Determine the boolean status (True/False) for each of the six aspects above.\n"
             "- Then, assign the overall Score (0-5) based on coverage and accuracy of those aspects.\n"
-            "- Correlation Rule: If you give a High Score (4 or 5), the caption MUST usually satisfy at least one specific checklist item (often 'Helpfulness', 'Takeaway', 'Visual', 'Relation', 'Stats', or 'OCR'). Verify this before finalizing the score.\n"
+            "- Correlation Rule: If you give a High Score (4 or 5), the caption MUST usually satisfy at least one specific checklist item.\n"
             "- If 'Helpfulness' is False, the score MUST be low (0-2).\n"
             "- Do NOT hallucinate True values to boost the score.\n\n"
-            "Explanation Requirements:\n"
-            "- If the score is high while some checklist items are False, explicitly explain the tradeoff (e.g., 'Rated highly for clarity/faithfulness, though it lacks visual details and statistics.').\n"
-            "- When marking an item False, briefly state why (e.g., 'Stats=False because no numbers are mentioned.').\n\n"
-            # --- 输出格式 ---
             "Output Format:\n"
             "{\n"
             "\"score\": int,\n"
@@ -319,66 +280,60 @@ def analyze_with_llm(caption: str, context: Optional[RatingContext] = None) -> O
             model="deepseek-chat",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_content}
+                {"role": "user", "content": user_content},
             ],
             stream=False,
-            timeout=20
+            timeout=20,
         )
         content = response.choices[0].message.content
-        print(f"[AI] Raw Response: {content}")
-        
-        # 清洗并解析
         cleaned = clean_json_string(content)
         data = json.loads(cleaned)
         dims_data = data.get("dimensions", {}) or {}
         checklist_data = data.get("checklist", {}) or {}
-        
+
         return RateCaptionResponse(
             score=data.get("score", 0),
             explanation="[AI] " + data.get("explanation", ""),
             dimensions=RatingDimensions(**dims_data),
             checklist=CaptionChecklist(**checklist_data),
-            model="deepseek-chat"
+            model="deepseek-chat",
         )
     except Exception as e:
         print(f"[AI] Error: {e}")
         return None
 
+
 def generate_captions_with_llm(context: RatingContext) -> Optional[GenerateCaptionResponse]:
-    """Generate short and long captions via LLM"""
     try:
         ctx_obj = context or RatingContext()
         system_prompt = (
             "You are a helpful scientific writing assistant. Based on the provided figure context (OCR and Paragraphs), "
             "generate two captions:\n"
             "Short Caption: A concise title-like description (1 sentence).\n"
-            "Long Caption: A detailed explanation covering specific data trends, relationships, and visual features found "
-            "in the context (2-4 sentences).\n"
+            "Long Caption: A detailed explanation covering specific data trends, relationships, and visual features found in the context (2-4 sentences).\n"
             "Also rate your own captions (0-5) based on quality.\n"
             "Return STRICT JSON: {\"short_caption\": {\"text\": \"...\", \"rating\": int}, \"long_caption\": {\"text\": \"...\", \"rating\": int}}"
         )
         user_content = (
-            f'Context Info:\n'
-            f'1. Text detected inside the image (OCR): "{ctx_obj.image_text}"\n'
-            f'2. Paragraphs mentioning the figure: "{" ".join(ctx_obj.mention_paragraphs)[:1000]}..."\n'
-            f'3. Original caption from paper: "{ctx_obj.original_caption}"'
+            f"Context Info:\n"
+            f"1. Text detected inside the image (OCR): \"{ctx_obj.image_text}\"\n"
+            f"2. Paragraphs mentioning the figure: \"{' '.join(ctx_obj.mention_paragraphs)[:1000]}...\"\n"
+            f"3. Original caption from paper: \"{ctx_obj.original_caption}\""
         )
         response = client.chat.completions.create(
             model="deepseek-chat",
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_content}
+                {"role": "user", "content": user_content},
             ],
             stream=False,
-            timeout=20
+            timeout=20,
         )
         content = response.choices[0].message.content
-        print(f"[AI] Raw Generation Response: {content}")
         cleaned = clean_json_string(content)
         data = json.loads(cleaned)
         sc = data.get("short_caption", {}) or {}
         lc = data.get("long_caption", {}) or {}
-        # support string fallbacks
         if isinstance(sc, str):
             sc = {"text": sc, "rating": 0}
         if isinstance(lc, str):
@@ -391,8 +346,8 @@ def generate_captions_with_llm(context: RatingContext) -> Optional[GenerateCapti
         print(f"[AI] Generation Error: {e}")
         return None
 
-# ---------------- 6. API 接口 ----------------
 
+# ---------------- 6) Generation helpers ----------------
 def _build_local_prompt(context: RatingContext) -> str:
     system = (
         "You are a helpful scientific writing assistant. Generate two improved figure captions based on the context. "
@@ -425,8 +380,8 @@ def _parse_short_long(text: str) -> Tuple[str, str]:
         return ("", "")
 
     pattern = re.compile(
-        r"(?:^|\n)\s*(?:Short(?:\s+Caption)?)\s*[:\\-]\s*(?P<short>.*?)(?=\n\s*(?:Long(?:\s+Caption)?)\s*[:\\-]|\Z)"
-        r"(?:\n\s*(?:Long(?:\s+Caption)?)\s*[:\\-]\s*(?P<long>.*))?",
+        r"(?:^|\n)\s*(?:Short(?:\s+Caption)?)\s*[:\-]\s*(?P<short>.*?)(?=\n\s*(?:Long(?:\s+Caption)?)\s*[:\-]|\Z)"
+        r"(?:\n\s*(?:Long(?:\s+Caption)?)\s*[:\-]\s*(?P<long>.*))?",
         flags=re.IGNORECASE | re.DOTALL,
     )
     m = pattern.search(cleaned)
@@ -447,7 +402,6 @@ def _parse_short_long(text: str) -> Tuple[str, str]:
 def generate_with_local(context: RatingContext) -> GenerateCaptionResponse:
     if LOCAL_MODEL is None or LOCAL_TOKENIZER is None or LOCAL_DEVICE is None:
         raise RuntimeError("Local model not loaded.")
-
     if torch is None:
         raise RuntimeError("torch is not available.")
 
@@ -477,19 +431,16 @@ def generate_with_local(context: RatingContext) -> GenerateCaptionResponse:
         prompt_len = inputs["input_ids"].shape[-1]
         raw_output = LOCAL_TOKENIZER.decode(output_ids[0][prompt_len:], skip_special_tokens=True).strip()
         cleaned = re.sub(r"^(Caption:|Output:)", "", raw_output, flags=re.IGNORECASE).strip()
-        cleaned = re.sub(r"^figure\\s*\\d+\\s*[:\\-]\\s*", "", cleaned, flags=re.IGNORECASE).strip()
+        cleaned = re.sub(r"^figure\s*\d+\s*[:\-]\s*", "", cleaned, flags=re.IGNORECASE).strip()
         return cleaned or raw_output
 
-    # Pass 1: Short
     short_input = f"{base_context}\n\nTask: Generate a single short sentence (title-like) for this figure."
     short_text = _run_inference(short_input, max_tokens=60, min_tokens=0)
 
-    # Pass 2: Long
     long_input = f"{base_context}\n\nTask: Write a detailed descriptive caption (multiple sentences) explaining trends, relationships, and data."
     long_text = _run_inference(long_input, max_tokens=220, min_tokens=30)
 
-    # Ensure short/long are separated cleanly
-    sentences = re.split(r"(?<=[.!?])\\s+", short_text)
+    sentences = re.split(r"(?<=[.!?])\s+", short_text)
     if sentences and sentences[0].strip():
         short_text = sentences[0].strip()
     else:
@@ -503,7 +454,6 @@ def generate_with_local(context: RatingContext) -> GenerateCaptionResponse:
     if short_text == long_text:
         long_text = f"Detailed view: {long_text}"
 
-    # Teacher grading / fallback
     short_eval = analyze_with_llm(short_text, context) if short_text else None
     short_rating = int(short_eval.score) if short_eval else (int(heuristic_rate(short_text).score) if short_text else 0)
 
@@ -522,7 +472,7 @@ def generate_captions_heuristic(context: RatingContext) -> GenerateCaptionRespon
     base = (ctx_obj.original_caption or "").strip() or "Figure caption (draft)."
     short_text = re.split(r"(?<=[.!?])\s+", base, maxsplit=1)[0].strip() or base[:140].strip()
 
-    snippets = []
+    snippets: List[str] = []
     if (ctx_obj.image_text or "").strip():
         snippets.append(f"OCR mentions: {ctx_obj.image_text.strip()[:250]}")
     if ctx_obj.mention_paragraphs:
@@ -573,36 +523,65 @@ def rate_caption_dispatch(caption: str, context: Optional[RatingContext], model_
     return heuristic_rate(caption)
 
 
+# ---------------- 7) Events ----------------
+@app.on_event("startup")
+async def startup_event():
+    enable_local = os.getenv("ENABLE_LOCAL_MODEL", "").strip().lower() in ("1", "true", "yes")
+    if not enable_local:
+        print("[Startup] Local model loading disabled (set ENABLE_LOCAL_MODEL=1 to enable).")
+        return
+    thread = threading.Thread(target=_load_local_model_once, daemon=True)
+    thread.start()
+    print("[Startup] Local model loading started in background.")
+
+
+# ---------------- 8) Endpoints ----------------
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
 
 @app.post("/upload_pdf")
 async def upload_pdf(file: UploadFile = File(...)):
     doc_id = str(uuid.uuid4())
     pdf_path = UPLOAD_DIR / f"{doc_id}.pdf"
     out_path = OUTPUT_DIR / doc_id
-    
+
     with pdf_path.open("wb") as f:
         shutil.copyfileobj(file.file, f)
-    
-    figures = []
+
+    figures: List[Dict[str, Any]] = []
     try:
-        # 允许 pdffigures2 失败而不崩掉整个接口
         pipeline.run_pdffigures2(str(pdf_path), str(out_path))
-        figures = pipeline.extract_from_pdf(str(pdf_path), out_path, f"pdffigures2_output/{doc_id}")
+        figures = pipeline.extract_from_pdf(str(pdf_path), out_path, "/pdffigures2_output")
     except Exception as e:
         print(f"[Pipeline Warning] Extraction incomplete: {e}")
-        
+
     return {"doc_id": doc_id, "figures": figures}
+
 
 @app.post("/rate_caption", response_model=RateCaptionResponse)
 async def rate_caption(payload: RateCaptionRequest, model_pref: str = "deepseek"):
     return rate_caption_dispatch(payload.caption, payload.context, model_pref=model_pref)
 
+
 @app.post("/generate_captions", response_model=GenerateCaptionResponse)
-async def generate_captions(payload: GenerateCaptionRequest, model_pref: str = "deepseek"):
-    return generate_captions_dispatch(payload.context, model_pref=model_pref)
+async def generate_captions(
+    payload: GenerateCaptionRequest,
+    response: Response,
+    model_pref: str = "deepseek",
+):
+    # User explicitly requested Local, and it is available
+    if model_pref == "local" and LOCAL_MODEL is not None:
+        print(f"[Gen] User requested Local Qwen.")
+        response.headers["X-Model-Used"] = "Local-Qwen"
+        return generate_with_local(payload.context)
+
+    # Default or Fallback to DeepSeek
+    print(f"[Gen] User requested DeepSeek (or Local not avail).")
+    response.headers["X-Model-Used"] = "DeepSeek-V3"
+    return generate_captions_with_llm(payload.context)
+
 
 @app.post("/submit_feedback")
 async def submit_feedback(payload: FeedbackRequest):
@@ -625,14 +604,21 @@ async def submit_feedback(payload: FeedbackRequest):
 
     return {"status": "success", "message": "Data saved for training"}
 
-# ---------------- 7. 静态文件服务 ----------------
+
+# ---------------- 9) Static file serving ----------------
+if not OUTPUT_DIR.exists():
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
 app.mount("/pdffigures2_output", StaticFiles(directory=OUTPUT_DIR), name="images")
 app.mount("/frontend", StaticFiles(directory=FRONTEND_DIR), name="static")
+
 
 @app.get("/")
 async def read_index():
     return FileResponse(FRONTEND_DIR / "index.html")
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)

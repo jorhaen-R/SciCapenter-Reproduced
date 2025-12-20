@@ -1,0 +1,23 @@
+# 忽略 Git 文件
+.git
+.gitignore
+
+# 忽略 Python 缓存和虚拟环境
+__pycache__
+*.pyc
+venv/
+.env
+
+# 忽略所有生成的数据 (关键！这些占了 1.5G)
+pdffigures2_output/
+uploaded_pdfs/
+
+# 忽略本地训练的大模型权重 (关键！这个很大)
+# 我们通过 docker-compose 的 volumes 挂载它，不需要打包进镜像
+backend/local_model/
+backend/scicap_raw.json
+backend/temp_scicap_val.json
+
+# 忽略 IDE 配置
+.vscode/
+.idea/

@@ -1,0 +1,16 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+fastapi
+uvicorn
+python-multipart
+openai
+python-dotenv
+pdfplumber
+pydantic
+requests
+httpx
+torch==2.2.2+cpu
+transformers
+peft
+accelerate
+safetensors
+numpy<2
